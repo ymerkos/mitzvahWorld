@@ -280,7 +280,7 @@ export default class UI extends Heeoolee {
 
 
 
-
+            console.log("Stringed parent?",stringedParent)
             var parent = opts
                 .parent !== undefined
             &&
@@ -298,7 +298,8 @@ export default class UI extends Heeoolee {
                 document.body : null
             ) || document.body;
           //      console.log("ASDF",stringedParent,parent,opts.parent,opts)
-            if(
+            console.log("HI!",parent,opts,opts.parent,Element,Document)
+          if(
                 parent
             ) {
                 

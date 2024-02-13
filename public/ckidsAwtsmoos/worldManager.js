@@ -198,7 +198,7 @@ class ManagerOfAllWorlds {
 
         
         this.parentForCanvas = av;
-       
+       console.log("YO! av",av)
 
         this.ui = ui;
 
@@ -339,7 +339,7 @@ class ManagerOfAllWorlds {
 
         var nav = navigator.userAgent.toLowerCase();
         if(nav.includes("iphone")) {
-            this.parentForCanvas = document.body
+           // this.parentForCanvas = document.body
         }
         console.log("About to start")
        // alert("About to add canvas")

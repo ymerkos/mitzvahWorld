@@ -365,6 +365,7 @@ export default class OlamWorkerManager {
                     width: 300,
                     height: 300
                 }
+
                 var mapAv = myUi.html({
                     shaym: "map",
                     className: "map",
@@ -380,6 +381,8 @@ export default class OlamWorkerManager {
                     }`
                     }
                 });
+
+                console.log("ADDING canvast to:",mapAv)
                 
                 var mapCanvas = myUi.html({
                     parent: mapAv,
