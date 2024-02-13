@@ -1,0 +1,22 @@
+{
+    "short_name": "Merkos",
+    "name": "Mitzvah World",
+    "icons": [
+        {
+            "src": "/icons/1/192.png",
+            "type": "image/png",
+            "sizes": "192x192"
+        },
+        {
+            "src": "/icons/1/512.png",
+            "type": "image/png",
+            "sizes": "512x512"
+        }
+    ],
+    "start_url": "/index.html",
+    "background_color": "#ffffff",
+    "display": "standalone",
+    "scope": "/",
+    "theme_color": "#000000"
+  }
+  
