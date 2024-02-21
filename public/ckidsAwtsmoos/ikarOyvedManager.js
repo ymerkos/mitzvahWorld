@@ -92,7 +92,8 @@ export default class OlamWorkerManager {
                 
             },
             htmlAction(dayuh={
-                    shaym, 
+                    shaym,
+                    selector, 
                     properties: {
                     //properties to set
                     }, 
@@ -121,6 +122,7 @@ export default class OlamWorkerManager {
 
                 var {
                     shaym,
+                    selector,
                     properties,
                     methods,
                     id
@@ -128,6 +130,7 @@ export default class OlamWorkerManager {
 
                 var ac = myUi.htmlAction({
                     shaym,
+                    selector,
                     properties,
                     methods
                 });
@@ -265,7 +268,8 @@ export default class OlamWorkerManager {
                 if(ret) {
                     var parsed = Utils
                         .evalStringifiedFunctions(child);
-                    parsed.av = shaym;
+                    parsed.parent = shaym;
+                    
                     var r = myUi.html(parsed);
                     console.log("Did it HTML added!",r,parsed)
                 }
@@ -279,6 +283,9 @@ export default class OlamWorkerManager {
                         id
                     }
                 });
+            },
+            "game started": a => {
+                document.body.className="inGame"
             },
             "htmlCreate": info => {
                 if(
@@ -649,6 +656,8 @@ export default class OlamWorkerManager {
                 }
             }
         );
+
+
         var off = this.canvasElement.transferControlToOffscreen();
         
         this.eved.postMessage({
@@ -1070,7 +1079,7 @@ function updateJoystickThumb({
     if(resetY !== 0)
         joystickThumb.style.top = thumbY + 'px';
     else joystickThumb.style.top = ""
-    console.log("Set or Reset",resetX,resetY,joystickThumb,joystickThumb.style.top,joystickThumb.style.left)
+   // console.log("Set or Reset",resetX,resetY,joystickThumb,joystickThumb.style.top,joystickThumb.style.left)
 }
 
 function getDistanceBetweenTouches(e) {

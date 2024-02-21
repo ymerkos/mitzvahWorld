@@ -4,6 +4,8 @@
  * */
 
 import coin from "../tochen/ui/resources/coin.js";
+import info from "../tochen/ui/resources/shlichus/info.js";
+
 
 /**
  * @file shlichus.js
@@ -273,7 +275,7 @@ class Shlichus {
 		//represents the NPC or source where the shlichus is from
 	
 	
-
+		this.on?.setActive(this, true);
 		
 		this.timeout = null;
 		if(!this.id)
@@ -334,7 +336,8 @@ class Shlichus {
 	update() {
 		if (this.isActive) {
 			this.on?.update(this);
-			this.updateMinimapPositions();
+			if(this.isSelected)
+				this.updateMinimapPositions();
 		}
 	}
 	
@@ -360,10 +363,11 @@ class Shlichus {
 					console.log("Couldn't remove",e,this,it)
 				}
 			}
+			this.collected = 0;
+			this.items = Array.from({length:this.items.length});
+			this.updateMinimapPositions();
 		}
-		this.collected = 0;
-		this.items = Array.from({length:this.items.length});
-		this.updateMinimapPositions();
+		
 	}
 	
 	async reset() {
@@ -584,7 +588,7 @@ export default class ShlichusHandler {
 			.forEach(w => {
 				if (w.isActive)
 					w.update(delta)
-			})
+			});
 	}
 
 	addShlichusHTMLOnList(shlichus) {
@@ -598,6 +602,7 @@ export default class ShlichusHandler {
 			 */
 			shaym: "shlichus progress info "+id,
 			shlichusID: id,
+			isSelected: false,
 			className: "shlichusProgress hidden",
 			awtsmoosClick: true,
 			children: [
@@ -610,6 +615,12 @@ export default class ShlichusHandler {
 					shaym: "shlichus description "+id,
 					className: "shlichusDescriptionProgress",
 					textContent: "aduiha8o2A  a2dh89a2d 89a2d d"
+				},
+				{
+					shaym: "shlichus info click "+id,
+					className: "infoIcon",
+					isInfo: true,
+					innerHTML: info
 				},
 				{
 					shaym: "shlichus info "+id,
@@ -703,6 +714,12 @@ export default class ShlichusHandler {
 		on = {
 			...on,
 			...{
+				setActive: (me, isActive=true) => {
+					this.activeShlichuseem.forEach(w=> {
+						w.isSelected = false;
+					})
+					me.isSelected = isActive;
+				},
 				progress: actions.progress.bind(actions),
 				creation: actions.creation.bind(actions),
 				timeUp: actions.timeUp.bind(actions),

@@ -27,7 +27,7 @@ var ui = [
                 },
                 onclick(e, $) {
 
-                    console.log("GI",$,231123)
+                    
                     var m = $("menu")
                     console.log("Doing")
                     if(!m) return;
@@ -60,23 +60,24 @@ var ui = [
             }
         ],
         style: {
-            top:0
+            top: "0px"
         },
     },
     
     {
         shaym: "msg npc",
         style: {
-            bottom: 20,
-            right:315
+            bottom: "20px",
+            right: "315px"
         },
         className: "dialogue npc",
     },
+
     {
         shaym: "msg chossid",
         style: {
-            bottom: 20,
-            left:315
+            bottom: "20px",
+            left: "315px"
         },
         className: "dialogue chossid",
     },

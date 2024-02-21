@@ -280,7 +280,7 @@ export default class UI extends Heeoolee {
 
 
 
-            console.log("Stringed parent?",stringedParent)
+         //   console.log("Stringed parent?",stringedParent)
             var parent = opts
                 .parent !== undefined
             &&
@@ -298,7 +298,7 @@ export default class UI extends Heeoolee {
                 document.body : null
             ) || document.body;
           //      console.log("ASDF",stringedParent,parent,opts.parent,opts)
-            console.log("HI!",parent,opts,opts.parent,Element,Document)
+        //    console.log("HI!",parent,opts,opts.parent,Element,Document)
           if(
                 parent
             ) {
@@ -391,7 +391,24 @@ setHtml(el, opts = {}) {
     if (typeof opts.style === "string") {
         el.style.cssText = opts.style;
     } else if (typeof opts.style === "object") {
-        Object.assign(el.style, opts.style);
+        var k = Object.keys(opts.style);
+        /*
+        console.log(
+            "Settings it",
+            opts,
+            opts.style,
+            opts.shaym,
+            el,
+            el.style,
+
+            "keys",
+            k
+        );*/
+
+        k.forEach(a => {
+            el.style[a] = opts.style[a]
+        });
+        //Object.assign(el.style, opts.style);
     }
 
     var attr = opts.attributes;
@@ -543,6 +560,7 @@ setHtml(el, opts = {}) {
      */
     htmlAction({
         shaym,
+        selector,
         html,
         properties = {},
         methods = {}
@@ -550,7 +568,10 @@ setHtml(el, opts = {}) {
         // If shaym is a string, get the corresponding HTML element,
         // if it's an HTMLElement, use it directly
         
-        
+        if(typeof(selector) == "string") {
+            html = document.querySelector(selecotr);
+            
+        }
         if(!html) 
             html = typeof shaym === "string" ? 
             this.getHtml(shaym) : html;

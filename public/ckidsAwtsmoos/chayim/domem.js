@@ -629,21 +629,23 @@ export default class Domem extends Nivra {
 					loop, 
 					music,
                     volume,
-					shaym:this.shaym,
+					shaym:this.shaym/*domem UID*/,
                     layerName
 				},
 				ready: function(me, $f, ui) {
-					var nv = $f(me.options.shaym/*domem UID*/);
-                    
+					
                     var newShaym = me.options.shaym + " "
                         + me.options.layerName;
-                    console.log(
+                    var nv = $f(newShaym);
+                    
+                  /*  console.log(
                         "A",
                         nv, 
                         me.options, 
                         newShaym,
-                        "Making!"
-                    )
+                        "Making! maybe?!",
+                        nv
+                    )*/
 					if(!nv) {
 						var h = ui.html({
 							shaym: newShaym,
@@ -654,7 +656,7 @@ export default class Domem extends Nivra {
 							autoplay: true,
 							loop:me.options.loop
 						});
-                        console.log("Made!",h,nv,"HI aain")
+                    //    console.log("Made!",h,nv,"HI aain")
 					} else {
                         ui.setHtml(nv, {
                             tag: "audio",
@@ -663,7 +665,7 @@ export default class Domem extends Nivra {
 							autoplay: true,
 							loop:me.options.loop
                         })
-                        console.log("SET",nv)
+                   //     console.log("SET",nv)
                     }
 				}
 			}

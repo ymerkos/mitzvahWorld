@@ -353,11 +353,16 @@ export default class Olam extends AWTSMOOS.Nivra {
             var setSizeOnce = false;
             this.on("resize", async peula => {
                 await this.setSize(peula.width, peula.height, false);
-                await this.ayshPeula("alert", "Set size: "+this.width +
-                    " by "+ this.height)
+                await this.ayshPeula(
+                    "alert", "Set size: "+this.width +
+                    " by "+ this.height,
+                    "after trying from: ", peula
+                )
                 if(!setSizeOnce) {
-                    await this.ayshPeula("alert", "First time setting up " + 
-                    this.nivrayim.length)
+                    await this.ayshPeula(
+                        "alert", "First time setting up " + 
+                        this.nivrayim.length
+                    )
                     this.nivrayim.forEach(n => {
                         
                         n.ayshPeula("canvased", n, this);
@@ -366,6 +371,7 @@ export default class Olam extends AWTSMOOS.Nivra {
                     
                     this.postprocessingSetup()
                     await this.ayshPeula("alert", "Finished first size set")
+                    this.ayshPeula("ready to start game")
                     setSizeOnce = true;
                 }
             });
@@ -1262,7 +1268,24 @@ export default class Olam extends AWTSMOOS.Nivra {
         if (width / height > desiredAspectRatio) {
             // total width is wider than desired aspect ratio
             newWidth = height * desiredAspectRatio;
+            this.ayshPeula("htmlAction", {
+                selector: "body",
+                methods: {
+                    classList: {
+                        remove: "sideInGame"
+                    }
+                }
+            });
         } else {
+            console.log("resizing horizontal");
+            this.ayshPeula("htmlAction", {
+                selector: "body",
+                methods: {
+                    classList: {
+                        add: "sideInGame"
+                    }
+                }
+            });
             // total width is taller than desired aspect ratio
             newHeight = width / desiredAspectRatio;
         }
@@ -1273,14 +1296,20 @@ export default class Olam extends AWTSMOOS.Nivra {
 	
         width = newWidth;
         height = newHeight;
-        
+        this.ayshPeula("alert", "size setting in function actually",width,height)
         // When both dimensions are numbers, the world is alright,
         // We can set our renderer's size, aligning the sight.
         if(typeof width === "number" && typeof height === "number" ) {
             
             if(this.renderer) {
+                this.ayshPeula(
+                    "alert", 
+                    "set size of renderer ",width,height
+                )
                 // Updates the size of the renderer context in pixels and let the canvas's style width and height be managed by CSS (the third parameter, false).
                 this.renderer.setSize(width, height, false);
+            } else {
+                this.ayshPeula("alert", "didnt set renderer!")
             }
             
             await this.updateHtmlOverlaySize(
@@ -1668,7 +1697,7 @@ export default class Olam extends AWTSMOOS.Nivra {
                             child.isSolid = true;
                          }
                          child.isMesh = true;
-                         console.log("Saved",nivra.entities,child.userData)
+                       //  console.log("Saved",nivra.entities,child.userData)
                     }
 
                     if(child.userData.remove) {
@@ -2465,7 +2494,7 @@ export default class Olam extends AWTSMOOS.Nivra {
                                 height:${ASPECT_Y}px;
                             }
 
-                            .ikarGameMenu > div > div {
+                            .gameUi > div {
                                 position:absolute;
                             }
                         `

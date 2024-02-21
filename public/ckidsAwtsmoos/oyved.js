@@ -275,7 +275,8 @@ async function go() {
                     startMapSetup: true
                 })
             });
-            me.olam.on("alert", async (ms) => {
+            me.olam.on("alert", async (...ms) => {
+                console.log("ALERTING: ",ms)
             /* postMessage({
                     alert: ms
                 })*/
@@ -323,6 +324,11 @@ async function go() {
                 return result;
             });
 
+            me.olam.on("ready to start game", () => {
+                postMessage({
+                    "game started": true
+                })
+            });
 
             me.olam.on("htmlGet", async (info={}) => {
                 

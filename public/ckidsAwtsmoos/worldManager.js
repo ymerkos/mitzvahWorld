@@ -346,6 +346,9 @@ class ManagerOfAllWorlds {
        var canvas = this.ui.html({
            parent: this.parentForCanvas,
            tag: "canvas",
+           style: {
+            width: "100%"
+           },
            shaym: "canvasEssence"   
        });
 
@@ -383,21 +386,28 @@ function setupGlobalFunctions() {
      * @param {Event} event - The event triggered by user interaction.
      * @returns {boolean} - True if a parent element with 'shlichusID' is found; otherwise, false.
      */
-    function searchForProperty(event, propertyName) {
+    function searchForProperty(event, propertyName, returnIt = false) {
         let el = event.target;
-
+        var pr = null;
+        var element = null;
         // Climb up the DOM tree
-        while (el && el !== document.body && el !== document.documentElement) {
+        while (!pr && el && el !== document.body && el !== document.documentElement) {
+            if(pr) break;
             // Check if the element has the 'shlichusID' attribute or property
             // This could be adjusted based on how 'shlichusID' is stored (e.g., data attribute, direct property)
             var prop = el[propertyName]
             if(prop !== undefined) {
-                return prop;
+                pr = prop;
+                element = el;
+                break;
             }
             el = el.parentElement; // Move up to the next parent element
         }
 
-        return null; // 'shlichusID' not found in any parent elements
+        if(returnIt) {
+            return element
+        }
+        return pr; // 'shlichusID' not found in any parent elements
     }
     window.searchForProperty = searchForProperty;
 }
