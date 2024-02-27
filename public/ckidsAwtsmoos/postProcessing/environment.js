@@ -75,7 +75,7 @@ export default class Environment {
     stopRain() {
         if (!this.isRaining) return;
 
-        for (const child of this.scene.children) {
+        this.scene.traverse(child => {
             if (child instanceof THREE.Light) {
                 const lightId = child.uuid;
                 const originalLight = this.originalLighting[lightId];
@@ -84,7 +84,7 @@ export default class Environment {
                     this.scene.add(originalLight.clone());
                 }
             }
-        }
+        })
         
         this.raindropsGroup.remove(this.cloudsGroup);
         this.cloudsGroup.clear();
@@ -110,37 +110,43 @@ export default class Environment {
     }
 
     addRaindrops() {
-        const boundingBox = this.groupBoundingBox || this.sceneBoundingBox;
+        if (!this.groupBoundingBox) return;
     
-        const geometry = new THREE.SphereGeometry(0.05, 8, 8);
+        // Geometry for raindrop shape, using ConeGeometry for a better raindrop effect
+        const geometry = new THREE.ConeGeometry(0.02, 0.1, 8); // Dimensions for a raindrop shape
+        //geometry.rotateX(Math.PI / 2); // Adjusting the rotation here
+    
+        // Correct the orientation to make the raindrop vertical
+        // Previously rotated on X-axis, which might have made it horizontal.
+        // Rotating on Y-axis to correct the orientation
+        geometry.rotateY(Math.PI / 2); // This rotation will make the geometry stand vertical
+    
         const material = new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.7 });
-        const numberOfRaindrops = 5454; // Example count
-
+        const numberOfRaindrops = 54254; // Adjust as needed
+    
         this.raindropInstance = new THREE.InstancedMesh(geometry, material, numberOfRaindrops);
         this.raindropInstance.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
-
+    
+        const { min, max } = this.groupBoundingBox;
         for (let i = 0; i < numberOfRaindrops; i++) {
-            const matrix = new THREE.Matrix4(); // Create a new matrix for each instance
-            // Position, rotation (if needed), and scale calculations go here
-            // For simplicity, we're only setting position here
             const position = new THREE.Vector3(
-                THREE.MathUtils.randFloatSpread(100), // Example x position
-                THREE.MathUtils.randFloatSpread(100), // Example y position
-                THREE.MathUtils.randFloatSpread(100)  // Example z position
+                THREE.MathUtils.randFloat(min.x, max.x),
+                THREE.MathUtils.randFloat(min.y, max.y),
+                THREE.MathUtils.randFloat(min.z, max.z)
             );
-            matrix.setPosition(position); // Set the position in the matrix
-            this.raindropInstance.setMatrixAt(i, matrix); // Apply the matrix to the instance
+    
+            const matrix = new THREE.Matrix4();
+            matrix.setPosition(position);
+            this.raindropInstance.setMatrixAt(i, matrix);
         }
-
-        this.raindropInstance.instanceMatrix.needsUpdate = true; // Inform THREE.js to update the instance matrix
-        
+    
+        this.raindropInstance.instanceMatrix.needsUpdate = true;
         this.raindropsGroup.add(this.raindropInstance);
-        
     }
 
     updateRaindrops() {
         const gravity = -0.1; // Example gravity effect
-    
+        const maxGrav = -0.7;
         for (let i = 0; i < this.raindropInstance.count; i++) {
             const matrix = new THREE.Matrix4();
             this.raindropInstance.getMatrixAt(i, matrix); // Get the current matrix
