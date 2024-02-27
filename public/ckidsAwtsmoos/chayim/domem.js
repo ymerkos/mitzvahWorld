@@ -620,7 +620,7 @@ export default class Domem extends Nivra {
         
         var music = this.olam.getComponent(path);
         
-        console.log("Hi!",music,path)
+       // console.log("Hi!",music,path)
         if(!music) return false;
         this.olam.ayshPeula("setHtml",({
             shaym: layerName,
@@ -692,7 +692,7 @@ export default class Domem extends Nivra {
 	) {
         var newShaym = this.shaym + " "
         + layerName;
-        console.log("Trying it",newShaym)
+       // console.log("Trying it",newShaym)
         this.olam.ayshPeula("htmlAction", {
             shaym: newShaym,
             methods: {

@@ -26,6 +26,7 @@ import MinimapPostprocessing from './postProcessing/minimap.js';
 //import AwtsmoosRaysShader from "./shaders/AwtsmoosRaysShader.js";
 
 
+import Environment from "/ckidsAwtsmoos/postProcessing/environment.js";
 import PostProcessingManager from 
 "./postProcessing/postProcessing.js";
 
@@ -199,15 +200,24 @@ export default class Olam extends AWTSMOOS.Nivra {
     startedShlichuseem = []
     constructor() {
         super();
-        
+        var self = this;
         try {
             ;
             this.ayin = new Ayin(this);
+
             this.ayin.camera.far = 150;
             this.scene.background = new THREE.Color(0x88ccee);
-         this.scene.fog = new THREE.Fog(0x88ccee,
+
+            var nivrayimGroup = new THREE.Group();
+            nivrayimGroup.name = "nivrayimGroup"
+            this.nivrayimGroup = nivrayimGroup;
+            this.scene.add(nivrayimGroup)
+            this.scene.fog = new THREE.Fog(0x88ccee,
              this.ayin.camera.near, this.ayin.camera.far);
             this.startShlichusHandler(this);
+            this.environment = new Environment({
+                scene: this.scene
+            });
 
             var c;
             /*setup event listeners*/
@@ -340,6 +350,12 @@ export default class Olam extends AWTSMOOS.Nivra {
                 }
             });
 
+            this.on("ready", () => {
+                console.log("rain starting?")
+                this.ayshPeula("start rain cycle", 15)
+                console.log("Started rain")
+            });
+
             /**
              * In order to determine what the
              * inital size of the window is
@@ -390,6 +406,42 @@ export default class Olam extends AWTSMOOS.Nivra {
                 }
             });
 
+            this.on("start rain", d => {
+                this.environment.startRain()
+            })
+
+            this.on("stop rain", d => {
+                this.environment.stopRain();
+            });
+
+            var _rainCycle = null;
+            this.on("start rain cycle", seconds => {
+                if(!seconds) seconds = 15
+
+                function rainCycle() {
+                    if(self.environment.isRaining) {
+                        self.ayshPeula("stop rain")
+                    } else
+                        self.ayshPeula("start rain");
+                      
+                    _rainCycle = setTimeout(
+                        rainCycle,
+                        seconds * 1000
+                    )
+                }
+
+                rainCycle();
+
+            });
+
+            this.on("stop rain cycle", () => {
+                this.ayshPeula("stop rain");
+                if(_rainCycle) {
+                    clearTimeout(_rainCycle);
+                }
+            })
+
+            
             this.on("switch worlds", async(worldDayuh) => {
                 var gameState = this.getGameState();
                 this.ayshPeula("switchWorlds", {
@@ -1029,7 +1081,7 @@ export default class Olam extends AWTSMOOS.Nivra {
             
             var textMesh = new THREE.Mesh(textGeo, mat);
             if(options.add) {
-                this.scene.add(textMesh)
+                this.nivrayimGroup.add(textMesh)
             }
             if(options.position) {
                 try {
@@ -1089,6 +1141,8 @@ export default class Olam extends AWTSMOOS.Nivra {
                         n.heesHawvoos(self.deltaTime) : 0)
                     );
                 }
+
+                self.environment.update(self.deltaTime)
 
                 self.ayin.update(self.deltaTime);
 
@@ -1927,7 +1981,7 @@ export default class Olam extends AWTSMOOS.Nivra {
         } else return null;
 
 
-        this.scene.add(three);
+        this.nivrayimGroup.add(three);
         
         this.nivrayim.push(nivra);
         this.nivrayimBeforeLoad.push(nivra);

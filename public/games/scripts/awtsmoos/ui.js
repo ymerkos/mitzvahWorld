@@ -310,7 +310,7 @@ export default class UI extends Heeoolee {
     }
 
 	setHtmlByShaym(shaym, opts={}) {
-		console.log("Setting by shaym",shaym);
+		//console.log("Setting by shaym",shaym);
 		var el = this.getHtml(shaym);
 		if(!el) return null;
 		return this.setHtml(el, opts);
@@ -569,7 +569,7 @@ setHtml(el, opts = {}) {
         // if it's an HTMLElement, use it directly
         
         if(typeof(selector) == "string") {
-            html = document.querySelector(selecotr);
+            html = document.querySelector(selector);
             
         }
         if(!html) 
