@@ -13,7 +13,7 @@ export default class Environment {
     originalLighting = null;
     groupBoundingBox = null;
     raindropBufferGeometry = null;
-    raindropInstance = null;
+    numberOfRaindrops = 6666; // Adjust based on desired density
     constructor({ scene }) {
         this.scene = scene;
     }
@@ -38,7 +38,7 @@ export default class Environment {
     
                 switch (child.type) {
                     case 'AmbientLight':
-                        child.intensity *= 0.5;
+                        child.intensity *= 0.2;
                         break;
                     default:
                         break;
@@ -114,70 +114,56 @@ export default class Environment {
     
         const geometry = new THREE.SphereGeometry(0.05, 8, 8);
         const material = new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.7 });
-    
-        const raindropDensity = 500;
-        const numberOfRaindrops = Math.ceil(raindropDensity);
-    
-        const raindropMesh = new THREE.InstancedMesh(geometry, material, numberOfRaindrops);
-        
-        const positions = new Float32Array(numberOfRaindrops * 3);
+        const numberOfRaindrops = 5454; // Example count
+
+        this.raindropInstance = new THREE.InstancedMesh(geometry, material, numberOfRaindrops);
+        this.raindropInstance.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
+
         for (let i = 0; i < numberOfRaindrops; i++) {
-            positions[i * 3] = THREE.MathUtils.randFloat(boundingBox.min.x, boundingBox.max.x);
-            positions[i * 3 + 1] = THREE.MathUtils.randFloat(boundingBox.min.y, boundingBox.max.y);
-            positions[i * 3 + 2] = THREE.MathUtils.randFloat(boundingBox.min.z, boundingBox.max.z);
-        }
-        raindropMesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
-        
-        // Set instance matrices
-        for (let i = 0; i < numberOfRaindrops; i++) {
+            const matrix = new THREE.Matrix4(); // Create a new matrix for each instance
+            // Position, rotation (if needed), and scale calculations go here
+            // For simplicity, we're only setting position here
             const position = new THREE.Vector3(
-                positions[i * 3],
-                positions[i * 3 + 1],
-                positions[i * 3 + 2]
+                THREE.MathUtils.randFloatSpread(100), // Example x position
+                THREE.MathUtils.randFloatSpread(100), // Example y position
+                THREE.MathUtils.randFloatSpread(100)  // Example z position
             );
-            const rotation = new THREE.Euler();
-            const quaternion = new THREE.Quaternion();
-            const scale = new THREE.Vector3(1, 1, 1);
-            const matrix = new THREE.Matrix4().compose(position, quaternion, scale);
-            raindropMesh.setMatrixAt(i, matrix);
+            matrix.setPosition(position); // Set the position in the matrix
+            this.raindropInstance.setMatrixAt(i, matrix); // Apply the matrix to the instance
         }
+
+        this.raindropInstance.instanceMatrix.needsUpdate = true; // Inform THREE.js to update the instance matrix
         
-        this.raindropsGroup.add(raindropMesh);
-        this.raindropInstance = raindropMesh;
-        this.raindropBufferGeometry = raindropMesh.geometry;
+        this.raindropsGroup.add(this.raindropInstance);
+        
+    }
+
+    updateRaindrops() {
+        const gravity = -0.1; // Example gravity effect
+    
+        for (let i = 0; i < this.raindropInstance.count; i++) {
+            const matrix = new THREE.Matrix4();
+            this.raindropInstance.getMatrixAt(i, matrix); // Get the current matrix
+            
+            const position = new THREE.Vector3();
+            position.setFromMatrixPosition(matrix); // Extract position from the matrix
+            position.y += gravity; // Apply gravity effect
+            
+            if (position.y < -50) { // Reset position if below a certain threshold
+                position.y = 50;
+            }
+            
+            matrix.setPosition(position); // Update the matrix with the new position
+            this.raindropInstance.setMatrixAt(i, matrix); // Set the updated matrix
+        }
+      //  console.log("Set",this.raindropInstance.instanceMatrix)
+        this.raindropInstance.instanceMatrix.needsUpdate = true; // Inform THREE.js that the matrices have been updated
     }
 
     update() {
-        if (
-            !this.isRaining || 
-            !this.raindropBufferGeometry ||
-            !this.raindropInstance
-        ) return;
-    
-        const positions = this.raindropBufferGeometry.getAttribute('position');
-        for (let i = 0, ul = positions.count; i < ul; i++) {
-            positions.setY(i, positions.getY(i) - 0.01);
-            if (positions.getY(i) < this.groupBoundingBox.min.y) {
-                positions.setY(i, this.groupBoundingBox.max.y);
-                positions.setX(i, THREE.MathUtils.randFloat(this.groupBoundingBox.min.x, this.groupBoundingBox.max.x));
-                positions.setZ(i, THREE.MathUtils.randFloat(this.groupBoundingBox.min.z, this.groupBoundingBox.max.z));
-            }
-        }
-        positions.needsUpdate = true;
-    
-        // Update instance matrices
-        const raindropMesh = this.raindropInstance
-        for (let i = 0; i < raindropMesh.count; i++) {
-            const position = new THREE.Vector3(
-                positions.getX(i),
-                positions.getY(i),
-                positions.getZ(i)
-            );
-            const rotation = new THREE.Euler();
-            const quaternion = new THREE.Quaternion();
-            const scale = new THREE.Vector3(1, 1, 1);
-            const matrix = new THREE.Matrix4().compose(position, quaternion, scale);
-            raindropMesh.setMatrixAt(i, matrix);
-        }
+        if (!this.isRaining || !this.raindropInstance) return;
+        this.updateRaindrops();
+
+        this.raindropInstance.instanceMatrix.needsUpdate = true;
     }
 }
