@@ -22,7 +22,7 @@ import("./worldLoader.js").then(async r => {
 //import Olam from "./worldLoader.js"
 console.log("Loaded")
 async function go() {
-    console.log("Hi!")
+    //console.log("Hi!")
     var inter;
 
     // Map to keep track of resolve functions for each action

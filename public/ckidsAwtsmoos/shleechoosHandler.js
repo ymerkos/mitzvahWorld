@@ -373,7 +373,7 @@ class Shlichus {
 	async reset() {
 		await this.dropShlichus();
 		
-		this.olam.ayshPeula("reset player position");
+		//this.olam.ayshPeula("reset player position");
 
 		this.initiate();
 	}

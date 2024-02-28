@@ -4,7 +4,7 @@
  */
 
 export default /*svg*/`
-<svg xmlns="http://www.w3.org/2000/svg" height="160" width="160">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" style="width: 100%; height: auto;">
  <g fill="#fff">
   <path d="m80 15c-35.88 0-65 29.12-65 65s29.12 65 65 65 65-29.12 65-65-29.12-65-65-65zm0 10c30.36 0 55 24.64 55 55s-24.64 55-55 55-55-24.64-55-55 24.64-55 55-55z"/>
 

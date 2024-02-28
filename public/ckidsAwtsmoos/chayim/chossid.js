@@ -134,7 +134,6 @@ export default class Chossid extends Medabeir {
 
         
         this.cameraControls();
-        this.dialogueControls();
         this.movingSounds()
     }
 
@@ -162,16 +161,21 @@ export default class Chossid extends Medabeir {
 
     }
     
-    dialogueControls() {
-      
-
-        
-
-        
-       
-
+    dialogueControls(e/*key pressed*/) {
+        var k = e.key;
+        console.log("Pressed!", k, this.interactingWith)
+        if(!this.interactingWith) {
+            return;
+        }
 
 
+        // Check if the key pressed is a number between 1 and 9
+        if (k >= 1 && k <= 9) {
+            console.log(`Number ${k} was pressed.`);
+            // Return the number as an integer
+            var num = parseInt(k, 10);
+            this.interactingWith?.toggleToOption?.(num - 1);
+        }
     }
 
     /**
@@ -271,6 +275,7 @@ export default class Chossid extends Medabeir {
         var isOtherview = false;
         olam.on("keypressed", k => {
             this.ayshPeula("keypressed", k);
+            this.dialogueControls(k);
             switch(k.code) {
                 case "KeyB":
                     this.throwBall(

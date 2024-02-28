@@ -281,6 +281,38 @@ export default class Medabeir extends Chai {
         return this.currentSelectedMsgIndex;
     }
 
+    toggleToOption(ind) {
+        if(isNaN(ind) || ind < 0) {
+            return;
+        }
+
+        var curM = this.currentMessage;
+        if(!curM) return null;
+        var resp = curM.responses;
+        if(!resp) return null;
+
+        if(this.currentSelectedMsgIndex != ind) {
+            this.currentSelectedMsgIndex = ind;
+            if(this.currentSelectedMsgIndex > resp.length - 1) {
+                this.currentSelectedMsgIndex = resp.length - 1;
+            }
+            
+            
+            var selected = resp[
+                this.currentSelectedMsgIndex
+            ];
+            if(!selected) return null;
+
+
+            
+            return (
+                this
+                .selectResponse(this.currentSelectedMsgIndex)
+            );
+        } else {
+            this.selectOption();
+        }
+    }
     /**
      * @method toggleOption 
      * toggles the current option of 

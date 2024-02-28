@@ -70,6 +70,7 @@ var ui = [
             bottom: "20px",
             right: "315px"
         },
+        awtsmoosClick: true,
         className: "dialogue npc",
     },
 
@@ -79,6 +80,7 @@ var ui = [
             bottom: "20px",
             left: "315px"
         },
+        awtsmoosClick: true,
         className: "dialogue chossid",
     },
 

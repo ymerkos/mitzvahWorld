@@ -103,7 +103,7 @@ export default /*css*/`
     }
 
     .infoIcon {
-        transform: scale(0.4);
+        width:60px;
     }
 
     .shlichusProgress {

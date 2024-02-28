@@ -17,7 +17,7 @@ export default /*css*/`
         display: flex;
         max-width: 600px;
         flex-direction: column;
-     
+        z-index:100;
         justify-content: center;
         align-items: left;
        
@@ -43,7 +43,23 @@ export default /*css*/`
         transition: opacity 0.5s, visibility 0.5s;
 
 
-        text-shadow: ${borderShadow(DIALOGUE_BORDER)};
+        text-shadow: -${
+            DIALOGUE_BORDER
+        }px -${
+            DIALOGUE_BORDER
+        }px 0 #000, ${
+            DIALOGUE_BORDER
+        }px -${
+            DIALOGUE_BORDER
+        }px 0 #000, -${
+            DIALOGUE_BORDER
+        }px ${
+            DIALOGUE_BORDER
+        }px 0 #000, ${
+            DIALOGUE_BORDER
+        }px ${
+            DIALOGUE_BORDER
+        }px 0 #000;
             
 
     }
