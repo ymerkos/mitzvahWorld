@@ -5,7 +5,7 @@
  * for weather and other effects to happen in the game
  */
 import * as THREE from '/games/scripts/build/three.module.js';
-
+import RainEffect from "/ckidsAwtsmoos/postProcessing/rain.js";
 export default class Environment {
     raindropsGroup = new THREE.Group();
     isRaining = false;
@@ -13,13 +13,65 @@ export default class Environment {
     originalLighting = null;
     groupBoundingBox = null;
     raindropBufferGeometry = null;
-    numberOfRaindrops = 6666; // Adjust based on desired density
     constructor({ scene }) {
         this.scene = scene;
     }
 
+    modifyLighting(on) {
+        if(on) {
+            if(!this.scene) return;
+
+            this.originalColors = {
+                fog: this.scene.fog.color.clone(),
+                background: this.scene.background.clone()
+            }
+
+            this.scene.fog.color.set("#1b315c");
+            this.scene.background.set("#2f4875")
+            this.originalLighting = {};
+        
+            this.scene.traverse(child => {
+                if (child instanceof THREE.Light) {
+                    const lightId = child.uuid;
+                    const originalLight = child.clone();
+                    this.originalLighting[lightId] = originalLight;
+        
+                    switch (child.type) {
+                        case 'AmbientLight':
+                            child.intensity *= 0.2;
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            });
+        
+            this.scene.userData.originalLighting = this.originalLighting;
+        } else {
+            this.scene.traverse(child => {
+                if (child instanceof THREE.Light) {
+                    const lightId = child.uuid;
+                    const originalLight = this.originalLighting[lightId];
+                    if (originalLight) {
+                        this.scene.remove(child);
+                        this.scene.add(originalLight.clone());
+                    }
+                }
+            });
+
+
+            this.scene.fog.color.set(
+                "#"+this.originalColors.fog.getHexString()
+            )
+            this.scene.background.set(
+                "#"+this.originalColors.background.getHexString()
+            )
+        }
+    }
+
     startRain() {
         if (!this.scene || this.isRaining) return;
+
 
         const nivrayimGroup = this.scene.getObjectByName('nivrayimGroup');
         
@@ -28,72 +80,30 @@ export default class Environment {
             return;
         }
 
-        this.originalLighting = {};
-    
-        this.scene.traverse(child => {
-            if (child instanceof THREE.Light) {
-                const lightId = child.uuid;
-                const originalLight = child.clone();
-                this.originalLighting[lightId] = originalLight;
-    
-                switch (child.type) {
-                    case 'AmbientLight':
-                        child.intensity *= 0.2;
-                        break;
-                    default:
-                        break;
-                }
-            }
-        });
-    
-        this.scene.userData.originalLighting = this.originalLighting;
-    
-        const numClouds = 5;
-        const cloudGeometry = new THREE.SphereGeometry(10, 32, 32);
-        const cloudMaterial = new THREE.MeshBasicMaterial({ color: 0xdddddd, transparent: true, opacity: 0.7 });
-    
-        this.groupBoundingBox = this.calculateGroupBoundingBox(nivrayimGroup);
-        const topY = this.groupBoundingBox.max.y;
-    
-        for (let i = 0; i < numClouds; i++) {
-            const cloud = new THREE.Mesh(cloudGeometry, cloudMaterial);
-            cloud.position.set(
-                THREE.MathUtils.randFloat(this.groupBoundingBox.min.x, this.groupBoundingBox.max.x),
-                THREE.MathUtils.randFloat(topY + 10, topY + 30),
-                THREE.MathUtils.randFloat(this.groupBoundingBox.min.z, this.groupBoundingBox.max.z)
-            );
-            this.cloudsGroup.add(cloud);
+        if(!this.groupBoundingBox)
+            // Assume calculateGroupBoundingBox somehow calculates the bounding box for the rain effect area
+            this.groupBoundingBox = this.calculateGroupBoundingBox(nivrayimGroup); // You need to define or update this method
+
+        if (!this.groupBoundingBox) {
+            console.error("Bounding box for rain not set.");
+            return;
         }
-    
-        this.raindropsGroup.add(this.cloudsGroup);
-        this.scene.add(this.raindropsGroup);
-    
+
+        this.modifyLighting(true)
+        if(!this.rainEffect)
+            // Initialize RainEffect with the scene and bounding box
+            this.rainEffect = new RainEffect({
+                scene: this.scene, 
+                boundingBox: this.groupBoundingBox
+            });
+        else {
+            this.rainEffect.initRain({
+                start: Date.now()
+            })
+        }
         this.isRaining = true;
-        this.addRaindrops();
     }
 
-    stopRain() {
-        if (!this.isRaining) return;
-
-        this.scene.traverse(child => {
-            if (child instanceof THREE.Light) {
-                const lightId = child.uuid;
-                const originalLight = this.originalLighting[lightId];
-                if (originalLight) {
-                    this.scene.remove(child);
-                    this.scene.add(originalLight.clone());
-                }
-            }
-        })
-        
-        this.raindropsGroup.remove(this.cloudsGroup);
-        this.cloudsGroup.clear();
-        this.raindropsGroup.clear();
-        this.scene.remove(this.raindropsGroup);
-        
-        this.isRaining = false;
-        this.groupBoundingBox = null;
-    }
 
     calculateGroupBoundingBox(group) {
         if (!group) return null;
@@ -109,67 +119,18 @@ export default class Environment {
         return boundingBox;
     }
 
-    addRaindrops() {
-        if (!this.groupBoundingBox) return;
-    
-        // Geometry for raindrop shape, using ConeGeometry for a better raindrop effect
-        const geometry = new THREE.ConeGeometry(0.02, 0.1, 8); // Dimensions for a raindrop shape
-        //geometry.rotateX(Math.PI / 2); // Adjusting the rotation here
-    
-        // Correct the orientation to make the raindrop vertical
-        // Previously rotated on X-axis, which might have made it horizontal.
-        // Rotating on Y-axis to correct the orientation
-        geometry.rotateY(Math.PI / 2); // This rotation will make the geometry stand vertical
-    
-        const material = new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.7 });
-        const numberOfRaindrops = 54254; // Adjust as needed
-    
-        this.raindropInstance = new THREE.InstancedMesh(geometry, material, numberOfRaindrops);
-        this.raindropInstance.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
-    
-        const { min, max } = this.groupBoundingBox;
-        for (let i = 0; i < numberOfRaindrops; i++) {
-            const position = new THREE.Vector3(
-                THREE.MathUtils.randFloat(min.x, max.x),
-                THREE.MathUtils.randFloat(min.y, max.y),
-                THREE.MathUtils.randFloat(min.z, max.z)
-            );
-    
-            const matrix = new THREE.Matrix4();
-            matrix.setPosition(position);
-            this.raindropInstance.setMatrixAt(i, matrix);
-        }
-    
-        this.raindropInstance.instanceMatrix.needsUpdate = true;
-        this.raindropsGroup.add(this.raindropInstance);
+    stopRain() {
+        if (!this.isRaining || !this.rainEffect) return;
+
+        // Assuming RainEffect class has a method to clean up or remove the rain effect from the scene
+        this.rainEffect.stop(); // You need to implement this method in RainEffect or handle cleanup here
+        this.modifyLighting(false)
+        this.rainEffect = null;
+        this.isRaining = false;
     }
 
-    updateRaindrops() {
-        const gravity = -0.1; // Example gravity effect
-        const maxGrav = -0.7;
-        for (let i = 0; i < this.raindropInstance.count; i++) {
-            const matrix = new THREE.Matrix4();
-            this.raindropInstance.getMatrixAt(i, matrix); // Get the current matrix
-            
-            const position = new THREE.Vector3();
-            position.setFromMatrixPosition(matrix); // Extract position from the matrix
-            position.y += gravity; // Apply gravity effect
-            
-            if (position.y < -50) { // Reset position if below a certain threshold
-                position.y = 50;
-            }
-            
-            matrix.setPosition(position); // Update the matrix with the new position
-            this.raindropInstance.setMatrixAt(i, matrix); // Set the updated matrix
-        }
-      //  console.log("Set",this.raindropInstance.instanceMatrix)
-        this.raindropInstance.instanceMatrix.needsUpdate = true; // Inform THREE.js that the matrices have been updated
-    }
-
-    update() {
-        if (!this.isRaining || !this.raindropInstance) return;
-        this.updateRaindrops();
-
-        this.raindropInstance.instanceMatrix.needsUpdate = true;
+    update(d) {
+        if (!this.isRaining || !this.rainEffect) return;
+        this.rainEffect.update(d)
     }
 }
