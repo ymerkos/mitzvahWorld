@@ -9,7 +9,7 @@ export default class RainEffect {
     constructor({
         scene, 
         boundingBox, 
-        density = 0.1,
+        density = 0.13,
         dropSpeed=10,
         dropLength=0.05,
     }) {
@@ -51,9 +51,9 @@ export default class RainEffect {
 
 
             for (let i = 0; i < raindropCount; i++) {
-                const x = THREE.MathUtils.randFloat(this.boundingBox.min.x, this.boundingBox.max.x);
-                const y = THREE.MathUtils.randFloat(this.boundingBox.min.y, this.boundingBox.max.y);
-                const z = THREE.MathUtils.randFloat(this.boundingBox.min.z, this.boundingBox.max.z);
+                const x = THREE.MathUtils.randFloat(this.boundingBox.min.x, this.boundingBox.max.x+1);
+                const y = THREE.MathUtils.randFloat(this.boundingBox.min.y, this.boundingBox.max.y+1);
+                const z = THREE.MathUtils.randFloat(this.boundingBox.min.z, this.boundingBox.max.z+1);
                 const length = this.dropLength;
 
                 // Start vertex
@@ -62,7 +62,7 @@ export default class RainEffect {
                 vertices[i * 6 + 2] = z;
                 // End vertex
                 vertices[i * 6 + 3] = x; // Same x to keep the raindrop vertical
-                vertices[i * 6 + 4] = y - length; // y - length to make the line vertical and downwards
+                vertices[i * 6 + 4] = y;// - length; // y - length to make the line vertical and downwardsß
                 vertices[i * 6 + 5] = z; // Same z
 
                 // Assign indices
@@ -92,20 +92,37 @@ export default class RainEffect {
                 uniform float boundingBoxMaxY;    // Maximum Y coordinate of bounding box
                 uniform float currentTime;        // Current time in seconds
                 uniform float dropLength;         // Length of each raindrop
-                attribute float raindropIdentifier; // Unique identifier for each raindrop
-                
+                attribute float vertexIndex;
                 void main() {
                     vec3 originalPosition = position.xyz;
-                    float totalDistance = (boundingBoxMaxY - boundingBoxMinY);
-                
-                    // Calculate drop offset for looping effect
-                    float dropOffset = mod(currentTime * dropSpeed, totalDistance * 0.6);
-                
+                    float totalDistance = boundingBoxMaxY - boundingBoxMinY;
+
+                    // Create a unique offset for each raindrop based on its original Y position
+                    // This uses the Y position to influence the phase of the raindrop's falling animation
+                    float positionOffset = (originalPosition.y - boundingBoxMinY) / totalDistance;
+
+                    // Calculate drop offset for looping effect, incorporating positionOffset
+                    // The positionOffset ensures that each raindrop's reset timing is slightly different
+                    float dropOffset = mod(currentTime * dropSpeed + positionOffset, totalDistance);
+
+                    bool isTop = mod(vertexIndex, 2.0) == 0.0;
+                    
                     // Apply offset to Y position
                     float newYPosition = originalPosition.y - dropOffset;
-                
-                
-                
+                    if(!isTop) {
+                        newYPosition -= dropLength;
+
+                    }
+
+                    if(isTop) {
+                        // Adjust newYPosition to ensure it wraps correctly within the bounding box
+                        if (newYPosition < boundingBoxMinY) {
+                            newYPosition += totalDistance;
+                        }
+                    } else if(newYPosition < boundingBoxMinY - dropLength) {
+                        newYPosition += totalDistance;
+                    }
+
                     gl_Position = projectionMatrix * modelViewMatrix * vec4(originalPosition.x, newYPosition, originalPosition.z, 1.0);
                 }
 
