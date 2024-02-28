@@ -731,6 +731,12 @@ export default class Olam extends AWTSMOOS.Nivra {
                 }
             });
 
+            this.on("remove shlichus", sID => {
+                var ind = this.startedShlichuseem.indexOf(sID);
+                if(ind > -1) {
+                    this.startedShlichuseem.splice(ind, 1)
+                }
+            })
             this.on("is shlichus started", sID => {
                 return this.startedShlichuseem.includes(sID)
             });
@@ -2055,7 +2061,7 @@ export default class Olam extends AWTSMOOS.Nivra {
                 var pl = w.placeholders;
                 
                 if(pl[nm]) {
-                    console.log("Checking",nivra,nivra.shlichus,pl[nm])
+                    
                     var av/*available*/ = pl[nm]
                     .filter(q => (
                         q.shlichus ? 

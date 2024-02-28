@@ -265,13 +265,13 @@ class Tawfeek {
  * shlichus.activate(); // Output: 'Activated!'
  */
 class Shlichus {
-	constructor(data) {
+	constructor(data, shlichusHandler) {
 		if (!data || typeof(data) != "object") {
 			data = {}
 		}
 		
 		Object.assign(this, data)
-
+		this.shlichusHandler = shlichusHandler
 		//represents the NPC or source where the shlichus is from
 	
 	
@@ -345,13 +345,18 @@ class Shlichus {
 		clearTimeout(this.timeout);
 		
 		this.isActive = false;
-		// this.on?.delete(this);
+		this.on?.delete(this);
+		this.collected = 0;
+
+		this.items = null;
+		this.updateMinimapPositions();
+		this.olam.ayshPeula("remove shlichus", this.id)
+		this.shlichusHandler.removeShlichusFromActive(this.id)
 		// this.on = {};
 	}
 
 	async dropShlichus() {
 		clearTimeout(this.timeout)
-		console.log("Resseting?!", this);
 		this.isActive = false;
 		
 		if(this.items) {
@@ -400,8 +405,23 @@ class Shlichus {
 	_did = false;
 	
 	async updateMinimapPositions(items) {
+
+		var mm = this.olam.minimap;
+		if (!mm) {
+			return;
+		}
+
+		if (!mm.shaderPass) {
+			return
+		}
+
 		if (!items) items = this.items
-		if (!items) return;
+		if (!items) {
+
+			
+			mm.shaderPass.uniforms.numberOfDvarim.value = 0;
+			return;
+		}
 		
 		var positions = items.map(w => {
 				if (!w || w.collected) {
@@ -424,15 +444,6 @@ class Shlichus {
 		}
 		
 
-		
-		var mm = this.olam.minimap;
-		if (!mm) {
-			return;
-		}
-
-		if (!mm.shaderPass) {
-			return
-		}
 
 		mm.shaderPass.uniforms
 			.objectPositions.value.splice(0, positions.length, ...positions);
@@ -616,12 +627,7 @@ export default class ShlichusHandler {
 					className: "shlichusDescriptionProgress",
 					textContent: "aduiha8o2A  a2dh89a2d 89a2d d"
 				},
-				{
-					shaym: "shlichus info click "+id,
-					className: "infoIcon",
-					isInfo: true,
-					innerHTML: info
-				},
+				
 				{
 					shaym: "shlichus info "+id,
 					className: "shlichusProgressInfo",
@@ -682,6 +688,12 @@ export default class ShlichusHandler {
 				{
 					className: "shlichusTimer hidden",
 					shaym: "shlichus time "+id
+				},
+				{
+					shaym: "shlichus info click "+id,
+					className: "infoIcon",
+					isInfo: true,
+					innerHTML: info
 				}
 			],
 		}
@@ -725,6 +737,7 @@ export default class ShlichusHandler {
 				timeUp: actions.timeUp.bind(actions),
 				setTime: actions.setTime.bind(actions),
 				update: actions.update.bind(actions),
+				delete: actions.delete.bind(actions),
 				finish: (sh) => {
 					self.removeShlichusFromActive(sh.id);
 					(actions.finish.bind(actions))(sh);
@@ -733,7 +746,7 @@ export default class ShlichusHandler {
 			}
 		}
 		data.on = on;
-		var newShlichus = new Shlichus(data);
+		var newShlichus = new Shlichus(data, this);
 		this.activeShlichuseem.push(newShlichus);
 		//newShlichus.initiate()
 		

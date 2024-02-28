@@ -104,10 +104,8 @@ export default class ShlichusActions {
                     var isInfo = searchForProperty(e, "isInfo");
                     var selected = shl.classList.contains("selected");
 
-                    console.log(tar,shl)
-                    console.log("clicking",tar,tar.isInfo,id)
                     if(isInfo) {
-                        console.log("Got the id",id)
+                        
                         if(id) {
                             ui.peula(inf, {
                                 shlichusInfo: id
@@ -177,6 +175,20 @@ export default class ShlichusActions {
 
         sh.olam.on("htmlPeula setSelected", setSelected)
 
+        sh.olam.on("htmlPeula dropShlichus", ({id, msg})=>{
+            console.log(id,sh,"dropping")
+            if(id !== sh.id) return;
+
+            showFail({
+                sh,
+                msg
+            });
+
+
+            sh.olam.showingImportantMessage = false;
+
+        });
+
         sh.olam.on(
             "htmlPeula returnStage",
             returnStage
@@ -204,6 +216,9 @@ export default class ShlichusActions {
             
             sh.olam.htmlAction({
                 shaym: "shlichus information",
+                properties: {
+                    currentShlichusID: shlichusID
+                },
                 methods: {
                     classList: {
                         remove: "hidden"
@@ -413,6 +428,17 @@ export default class ShlichusActions {
         this.setEvents(sh);
     }
 
+    delete(sh) {
+        var id = sh.id;
+        sh.olam.htmlAction({
+            shaym: "shlichus progress info " + id,
+            methods: {
+                remove: true
+            }
+        })
+        console.log("removing!",sh)
+    }
+
     async progress(sh) {
         var id = sh.id;
         var percent = sh.collected / 
@@ -544,8 +570,21 @@ export default class ShlichusActions {
     }
 
     timeUp(sh) {
-      //  console.log("ran out of time",sh)
-        sh.olam.showingImportantMessage = true;
+        showFail({
+            sh,
+            msg: "The time ran OUT!"
+            +" It's okay, the first step to sucess might "
+            +"sometimes be failure, like it is now."
+            +" Reset the shlichus?"
+        })
+     
+    }
+}
+
+function showFail({
+    sh, msg
+}) {
+    sh.olam.showingImportantMessage = true;
         sh.olam.htmlAction({
             shaym: "failed alert shlichus",
             methods: {
@@ -561,13 +600,9 @@ export default class ShlichusActions {
             shaym: "failed message",
             properties: {
                 
-                textContent: "The time ran OUT!"
-                +" It's okay, the first step to sucess might "
-                +"sometimes be failure, like it is now."
-                +" Reset the shlichus?"
+                textContent: msg
             }
         })
-    }
 }
 
 function formatTime(seconds) {
