@@ -376,7 +376,9 @@ export default class Chossid extends Medabeir {
 	
 	
 	async afterBriyah() {
-		await super.afterBriyah(this)
+		await super.afterBriyah(this);
+
+        this.olam.ayshPeula("save player position")
 	}
 
     /**

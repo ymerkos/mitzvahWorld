@@ -347,7 +347,7 @@ class ManagerOfAllWorlds {
            parent: this.parentForCanvas,
            tag: "canvas",
            style: {
-            width: "100%"
+            //width: "100%"
            },
            shaym: "canvasEssence"   
        });

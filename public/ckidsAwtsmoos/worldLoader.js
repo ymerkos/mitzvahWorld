@@ -60,6 +60,23 @@ var styled = false;
 export default class Olam extends AWTSMOOS.Nivra {
     html = null;
 
+
+    actions = {
+        reset(player, nivra/*that collided with*/, olam) {
+           // console.log("Reset!",player, nivra)
+           
+           if(!player.teleporting) {
+            console.log(player.olam, olam, olam == player.olam)
+            
+            player.teleporting = true;
+            setTimeout(() => {
+                olam.ayshPeula('reset player position')
+                player.teleporting = false
+            }, 500)
+           }
+        }
+    }
+
     //DOF effect
     coby = 0;
     // constants
@@ -356,6 +373,10 @@ export default class Olam extends AWTSMOOS.Nivra {
                 console.log("Started rain")
             });
 
+
+            /**
+             * 
+             */
             /**
              * In order to determine what the
              * inital size of the window is
@@ -451,7 +472,7 @@ export default class Olam extends AWTSMOOS.Nivra {
             });
 
             this.on("reset player position", () => {
-                console.log
+              
                 var c = this.nivrayim.find(w => 
                     w.constructor.name == "Chossid"
                 );
@@ -470,8 +491,11 @@ export default class Olam extends AWTSMOOS.Nivra {
                     } catch(e) {
                         console.log(e)
                     }
+                } else {
+                    console.log("No player position!?")
                 }
-            })
+            });
+
             this.on("save player position", () => {
                 var c = this.nivrayim.find(w => 
                     w.constructor.name == "Chossid" 
@@ -1690,7 +1714,18 @@ export default class Olam extends AWTSMOOS.Nivra {
                 gltf.scene.traverse(child => {
                     
                     
-                    
+                    if(child.userData.action) {
+                        var ac = this.actions[child.userData.action];
+                        if(ac) {
+                            if(!nivra.childrenWithActions) {
+                                nivra.childrenWithActions = [];
+                            }
+                            nivra.childrenWithActions.push(ac);
+                            child.awtsmoosAction = (player, nivra) => ac(
+                                player, nivra, this
+                            );
+                        }
+                    }
                     /*
                         look for objects that
                         have the custom property "placeholder"
