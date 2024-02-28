@@ -163,7 +163,7 @@ export default class Chossid extends Medabeir {
     
     dialogueControls(e/*key pressed*/) {
         var k = e.key;
-        console.log("Pressed!", k, this.interactingWith)
+      //  console.log("Pressed!", k, this.interactingWith)
         if(!this.interactingWith) {
             return;
         }
@@ -171,7 +171,7 @@ export default class Chossid extends Medabeir {
 
         // Check if the key pressed is a number between 1 and 9
         if (k >= 1 && k <= 9) {
-            console.log(`Number ${k} was pressed.`);
+            //console.log(`Number ${k} was pressed.`);
             // Return the number as an integer
             var num = parseInt(k, 10);
             this.interactingWith?.toggleToOption?.(num - 1);

@@ -493,7 +493,7 @@ class Octree {
 			v2.applyMatrix4( mesh.matrixWorld );
 			v3.applyMatrix4( mesh.matrixWorld );
 	
-			this.removeTriangle( new AwtsmoosTriangle( v1, v2, v3. mesh ) );
+			this.removeTriangle( new AwtsmoosTriangle( v1, v2, v3, mesh ) );
 		}
 	
 		if ( isTemp ) {
@@ -503,7 +503,7 @@ class Octree {
 	
 	removeTriangle( triangleToRemove ) {
 		this.triangles = this.triangles.filter(triangle => !triangle.equals(triangleToRemove));
-	
+		
 		// Remove the triangle from relevant subtrees
 		for ( let i = 0; i < this.subTrees.length; i++ ) {
 			var subTree = this.subTrees[i];

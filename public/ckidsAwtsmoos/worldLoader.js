@@ -2192,6 +2192,7 @@ export default class Olam extends AWTSMOOS.Nivra {
         if(nivra.isMesh) {
             try {
                 if(nivra.isSolid) {
+                    console.log("removing from octree")
                     this.worldOctree.removeMesh(nivra)
                 }
                 nivra.removeFromParent();
