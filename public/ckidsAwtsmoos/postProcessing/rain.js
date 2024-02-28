@@ -45,9 +45,14 @@ export default class RainEffect {
 
             const vertices = new Float32Array(raindropCount * 6); // Two vertices per line, three components per vertex
 
+            const indices = new Float32Array(raindropCount * 2); // One index for each vertex in a raindrop
+
+            const raindropIdentifiers = new Float32Array(raindropCount * 2); // Two vertices per raindrop
+
+
             for (let i = 0; i < raindropCount; i++) {
                 const x = THREE.MathUtils.randFloat(this.boundingBox.min.x, this.boundingBox.max.x);
-                const y = THREE.MathUtils.randFloat(this.boundingBox.min.y+5, this.boundingBox.max.y-5);
+                const y = THREE.MathUtils.randFloat(this.boundingBox.min.y, this.boundingBox.max.y);
                 const z = THREE.MathUtils.randFloat(this.boundingBox.min.z, this.boundingBox.max.z);
                 const length = this.dropLength;
 
@@ -59,11 +64,19 @@ export default class RainEffect {
                 vertices[i * 6 + 3] = x; // Same x to keep the raindrop vertical
                 vertices[i * 6 + 4] = y - length; // y - length to make the line vertical and downwards
                 vertices[i * 6 + 5] = z; // Same z
+
+                // Assign indices
+                indices[i * 2] = i * 2;     // Index for the start vertex
+                indices[i * 2 + 1] = i * 2 + 1; // Index for the end vertex (assuming lines, so every pair is a new raindrop)
+                raindropIdentifiers[i * 2] = i;
+                raindropIdentifiers[i * 2 + 1] = i;
             }
 
             const geometry = new THREE.BufferGeometry();
             geometry.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
-
+            geometry.setAttribute('vertexIndex', new THREE.BufferAttribute(indices, 1)); // Add this line
+            // Add the identifier as an attribute to your geometry
+            geometry.setAttribute('raindropIdentifier', new THREE.BufferAttribute(raindropIdentifiers, 1));
             const material = new THREE.ShaderMaterial({
                 uniforms: {
                     time: { value: 0.0 },
@@ -77,28 +90,26 @@ export default class RainEffect {
                 uniform float dropSpeed;          // Speed of raindrops falling
                 uniform float boundingBoxMinY;    // Minimum Y coordinate of bounding box
                 uniform float boundingBoxMaxY;    // Maximum Y coordinate of bounding box
-                uniform float currentTime;        // Current time in seconds (corrected comment)
-
+                uniform float currentTime;        // Current time in seconds
+                uniform float dropLength;         // Length of each raindrop
+                attribute float raindropIdentifier; // Unique identifier for each raindrop
+                
                 void main() {
-                    // Get the original starting position for each raindrop
                     vec3 originalPosition = position.xyz;
-                    // Calculate total distance of the bounding box
-                    float totalDistance = boundingBoxMaxY - boundingBoxMinY;
-                    // Calculate animation duration for a single drop to traverse the bounding box
-                    float animationDuration = totalDistance / dropSpeed;
-
-                    // Calculate a repeating offset based on the current time, ensuring seamless looping
-                    float dropPositionOffset = mod(currentTime * dropSpeed, totalDistance);
-                    /*
-                    float cy = originalPosition.y  - mod(currentTime * dropSpeed, animationDuration) ;
-                    */
-                   // Adjust the calculation to ensure seamless looping from bottom to top
-                    float cy = mod(originalPosition.y - dropPositionOffset + totalDistance, totalDistance) + boundingBoxMinY;
-
-                    // Set the final position of the raindrop
-                    gl_Position = projectionMatrix * modelViewMatrix * vec4(
-                        originalPosition.x, cy, originalPosition.z, 1.0);
+                    float totalDistance = (boundingBoxMaxY - boundingBoxMinY);
+                
+                    // Calculate drop offset for looping effect
+                    float dropOffset = mod(currentTime * dropSpeed, totalDistance * 0.6);
+                
+                    // Apply offset to Y position
+                    float newYPosition = originalPosition.y - dropOffset;
+                
+                
+                
+                    gl_Position = projectionMatrix * modelViewMatrix * vec4(originalPosition.x, newYPosition, originalPosition.z, 1.0);
                 }
+
+
                 `,
                 fragmentShader: /*glsl*/`
                     void main() {
