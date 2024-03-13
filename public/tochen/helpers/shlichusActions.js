@@ -557,7 +557,7 @@ export default class ShlichusActions {
     }
 
     setTime(sh, info={minutes:0,seconds:0}||{}) {
-        var override = 6;
+        var override = null//6;
         var minutes=info.minutes||0;
         var seconds = info.seconds||0;
         sh.startTime = Date.now();
