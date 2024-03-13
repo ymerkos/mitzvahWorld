@@ -576,7 +576,7 @@ export default class ShlichusActions {
             msg: "The time ran OUT!"
             +" It's okay, the first step to sucess might "
             +"sometimes be failure, like it is now."
-            +" Reset the shlichus?"
+            +" To reset, go find the one who gave you the shlichus and get it again."
         })
      
     }
@@ -585,7 +585,7 @@ export default class ShlichusActions {
 function showFail({
     sh, msg
 }) {
-    sh.olam.showingImportantMessage = true;
+    //sh.olam.showingImportantMessage = true;
         sh.olam.htmlAction({
             shaym: "failed alert shlichus",
             methods: {
@@ -595,7 +595,7 @@ function showFail({
             }
 
         })
-      console.log("DROPPING")
+     
         sh.dropShlichus();
         sh.olam.htmlAction({
             shaym: "failed message",
