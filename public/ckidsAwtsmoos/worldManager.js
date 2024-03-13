@@ -102,7 +102,7 @@ class ManagerOfAllWorlds {
 
         var first = false;
         h.addEventListener("start", async e => {
-            console.log(e)
+          //  console.log(e)
          //   alert("Started! First time? "+first)
             if(!first) {
                 first = true;
@@ -134,7 +134,6 @@ class ManagerOfAllWorlds {
 
         function start(e) {
        //     alert("Starting")
-            console.log("Loading it now !!!",e)
             self.initializeForFirstTime(e, {
                 onerror(e) {
                    
@@ -148,7 +147,7 @@ class ManagerOfAllWorlds {
                             "There was an error. Check console, contact Coby."
                         }
                     })
-                    console.log("wow", e)
+                    
             
                 }
             })
@@ -198,7 +197,7 @@ class ManagerOfAllWorlds {
 
         
         this.parentForCanvas = av;
-       console.log("YO! av",av)
+        
 
         this.ui = ui;
 
@@ -209,7 +208,7 @@ class ManagerOfAllWorlds {
         this.onerror = opts.onerror;
     //    alert("About to start world "+ this.started)
         if(!this.started) {
-            console.log("Starting world",worldDayuh)
+            
             this.startWorld({
                 worldDayuh,
                 gameUiHTML
@@ -228,7 +227,7 @@ class ManagerOfAllWorlds {
                 
                 
                 this.socket.onmessage = e=>{
-                    console.log(e)
+                    
                     if(e.data.switchWorlds) {
                         this.switchWorlds({
                             ...e.data.switchWorlds
@@ -318,7 +317,7 @@ class ManagerOfAllWorlds {
             gameState: this.gameState,
             on: {
                 ready(m) {
-                    console.log("Loaded world");
+                    
 
                     m
                     .ayshPeula("alert", "Ok now its officially ready");
@@ -341,7 +340,7 @@ class ManagerOfAllWorlds {
         if(nav.includes("iphone")) {
            // this.parentForCanvas = document.body
         }
-        console.log("About to start")
+        
        // alert("About to add canvas")
        var canvas = this.ui.html({
            parent: this.parentForCanvas,
@@ -362,7 +361,7 @@ class ManagerOfAllWorlds {
                 async pawsawch() {
                     var ID = Date.now();
                     
-                    console.log("I did it!",ID)
+                    
                     man.postMessage({
                         heescheel: heescheelObj
                     });
@@ -370,8 +369,8 @@ class ManagerOfAllWorlds {
             },
             canvas
         );
+        window.g=man
         
-        console.log("Got manager",window.g=man)
        // alert("Started worker")
         window.socket = man;
         this.socket = man;

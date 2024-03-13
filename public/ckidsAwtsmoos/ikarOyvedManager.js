@@ -39,7 +39,6 @@ export default class OlamWorkerManager {
             console.log(m,m+"","HI!")
         })
 
-        console.log("GOt a",this.eved,workerPath)
         
 		if(typeof(myUi.on) == "function") {
 			myUi.on("custom peula", ({
@@ -271,7 +270,7 @@ export default class OlamWorkerManager {
                     parsed.parent = shaym;
                     
                     var r = myUi.html(parsed);
-                    console.log("Did it HTML added!",r,parsed)
+                  
                 }
             },
             htmlDelete({shaym, id}) {
@@ -389,7 +388,7 @@ export default class OlamWorkerManager {
                     }
                 });
 
-                console.log("ADDING canvast to:",mapAv)
+                
                 
                 var mapCanvas = myUi.html({
                     parent: mapAv,
@@ -410,7 +409,7 @@ export default class OlamWorkerManager {
             
         };
 
-        console.log("in worker")
+        
         this.setUpEventListeners();
        /* var p = options.pawsawch;
         if(p && typeof(p) == "function") {

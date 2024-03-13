@@ -363,6 +363,7 @@ class Shlichus {
 			var it;
 			for(it of this.items) {
 				try {
+					console.log("REMOVING IT",it)
 					this.olam.sealayk(it)
 				} catch(e) {
 					console.log("Couldn't remove",e,this,it)
@@ -372,6 +373,14 @@ class Shlichus {
 			this.items = Array.from({length:this.items.length});
 			this.updateMinimapPositions();
 		}
+
+		this.on?.delete(this);
+		this.collected = 0;
+
+		//this.items = null;
+		//this.updateMinimapPositions();
+		this.olam.ayshPeula("remove shlichus", this.id)
+		this.shlichusHandler.removeShlichusFromActive(this.id)
 		
 	}
 	
@@ -379,8 +388,8 @@ class Shlichus {
 		await this.dropShlichus();
 		
 		//this.olam.ayshPeula("reset player position");
-
-		this.initiate();
+		this.olam.ayshPeula("accept shlichus", this.id)
+		//this.initiate();
 	}
 	initiate() {
 		this.on?.creation?.(this);

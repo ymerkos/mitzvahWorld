@@ -161,7 +161,7 @@ export default [
 									var sa = $("failed alert shlichus")
 									ui.peula(sa, {
 										resetShlichus: nm
-									})
+									});
                                 }
                             }),
 							mitzvahBtn({

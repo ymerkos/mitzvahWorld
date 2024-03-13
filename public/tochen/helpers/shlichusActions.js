@@ -183,6 +183,7 @@ export default class ShlichusActions {
                 sh,
                 msg
             });
+            console.log("DROPT?",id,msg,sh)
 
 
             sh.olam.showingImportantMessage = false;
@@ -556,7 +557,7 @@ export default class ShlichusActions {
     }
 
     setTime(sh, info={minutes:0,seconds:0}||{}) {
-        var override = null//3;
+        var override = 6;
         var minutes=info.minutes||0;
         var seconds = info.seconds||0;
         sh.startTime = Date.now();
@@ -594,8 +595,8 @@ function showFail({
             }
 
         })
-      
-        sh.delete();
+      console.log("DROPPING")
+        sh.dropShlichus();
         sh.olam.htmlAction({
             shaym: "failed message",
             properties: {

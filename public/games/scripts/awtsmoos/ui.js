@@ -120,7 +120,6 @@ export default class UI extends Heeoolee {
 			return;
 		}
 		
-		console.log("OB",obj)
 		for(
 			var k 
 			in obj

@@ -204,7 +204,7 @@ export default class Medabeir extends Chai {
 
             
             var shl = this.olam.ayshPeula("get next shlichus data", startShlichusID)
-            console.log("Got!",shl)
+
             if(!shl) return def;
 
             var d = shl.dialogue;
@@ -271,13 +271,13 @@ export default class Medabeir extends Chai {
      * @param {Int} responseIndex 
      */
     selectResponse(responseIndex) {
-        console.log("Selecitng",responseIndex)
+       
         if(
             responseIndex !== undefined
         )
             this.currentSelectedMsgIndex = responseIndex;
         this.ayshPeula("selectedMessage", this.currentSelectedMsgIndex);
-        console.log("Did aysh",this.currentSelectedMsgIndex)
+      
         return this.currentSelectedMsgIndex;
     }
 
@@ -357,7 +357,7 @@ export default class Medabeir extends Chai {
      
     chooseResponse(responseIndex) {
         var chosenResponse = this.currentMessage.responses[responseIndex];
-        console.log("Chose",chosenResponse)
+       
         if (!chosenResponse) return;
         var as/*acceptShlichus*/ = chosenResponse.acceptShlichus;
         if(as) {
@@ -381,7 +381,7 @@ export default class Medabeir extends Chai {
                 this.ayshPeula("close dialogue",
                     str
                 );
-                console.log("Closing!",str)
+            
             }
             this.state = "idle";
          

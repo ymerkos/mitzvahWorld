@@ -104,7 +104,6 @@ export default class Dialogue extends Interaction {
                     );
 
                     function toggle(ind) {
-                        console.log("Toggling", ind)
                         var id = ind.id;
                         self.me.toggleToOption(id)
                     }

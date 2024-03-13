@@ -440,7 +440,6 @@ export default class Chossid extends Medabeir {
         if(!coords) return;
         this.minimapPos = coords;
         if(!this._did) {
-            console.log(coords,"A")
             this._did=true;
         }
         var {x, y} = coords;  /*
