@@ -11,7 +11,7 @@
 
 //import starting level
 
-import ManagerOfAllWorlds from "./worldManager.mjs";
+import ManagerOfAllWorlds from "./worldManager.js";
 
 console.log("B\"H",
 "\n","Starting the Ikar JS!")
