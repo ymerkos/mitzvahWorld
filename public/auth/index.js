@@ -47,7 +47,7 @@ function startAll() {
     if(name) {
         alert("Great! Enjoy");
         var sessionId = "BH_"+Date.now()+"_session"
-        writeToFirestore("names", "sessions", {
+        writeToFirestore("names", "sessions", sessionId, name, {
             sessionId,
             name
         }).then(r=>{
