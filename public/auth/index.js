@@ -46,6 +46,7 @@ window.writeToFirestore=writeToFirestore
 window.readFromFirestore=readFromFirestore;
 var dt = new Date()
 var pageLoad = dt.toISOString()+"";
+
 function updateProgress(data) {
     return new Promise((r,j) => {
         var myName = localStorage.getItem("name");

@@ -369,7 +369,11 @@ export default class OlamWorkerManager {
                 });
             },
             updateProgress(data) {
-                asdf.updateProgress(data)
+                asdf.updateProgress(data).then(r => {
+                    console.log("Updated!",r)
+                }).catch(e) {
+                    console.log("Issue updating",e)
+                }
             },
 
             alert(ms) {
