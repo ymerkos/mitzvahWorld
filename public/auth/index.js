@@ -42,7 +42,7 @@ window.getDoc=getDoc;
 window.collection=collection;
 window.writeToFirestore=writeToFirestore
 window.readFromFirestore=readFromFirestore
-var pageLoad = Date.now();
+var pageLoad = (new Date()).toISOString();
 function updateProgress(data) {
     return new Promise((r,j) => {
         var myName = localStorage.getItem("name");
