@@ -50,6 +50,10 @@ function startAll() {
         writeToFirestore("names", "sessions", {
             sessionId,
             name
+        }).then(r=>{
+            console.log("Wrote!",r)
+        }).catch(e => {
+            console.log("No")
         })
     }
 }
