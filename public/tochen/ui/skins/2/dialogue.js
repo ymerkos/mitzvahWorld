@@ -12,7 +12,12 @@ export default /*css*/`
         --shadowWidth: 1.6px;
     }
 
-    
+    .dialogue > div:hover {
+        cursor: pointer;
+        background: rgb(36 21 80 / 25%);
+        box-shadow: 3px 3px 0px rgb(243 214 133 / 80%) inset, -3px -3px 0px rgb(241 219 155 / 80%) inset, 0 0 0 2px #ffe8a4;
+    }
+
     .dialogue {
         display: flex;
         max-width: 600px;

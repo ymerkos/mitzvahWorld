@@ -126,9 +126,9 @@ export default class Domem extends Nivra {
             })
 		});
 
-        this.on("sealayk", (olam) => {
-            if(this.mesh) {
-                
+        this.on("sealayk", () => {
+            if(this.olam) {
+                this.olam.ayshPeula("sealayk", this)
             }
         });
 
@@ -156,6 +156,9 @@ export default class Domem extends Nivra {
         // Additional properties can be set here
     }
 
+    sealayk() {
+        this.ayshPeula("sealayk")
+    }
     serialize() {
         super.serialize();
         this.serialized = {

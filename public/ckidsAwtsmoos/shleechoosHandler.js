@@ -274,7 +274,7 @@ class Shlichus {
 		this.shlichusHandler = shlichusHandler
 		//represents the NPC or source where the shlichus is from
 	
-	
+		this.placeholdersAddedTo = [];
 		this.on?.setActive(this, true);
 		
 		this.timeout = null;
@@ -341,9 +341,9 @@ class Shlichus {
 		}
 	}
 	
-	delete() {
+	async delete() {
 		clearTimeout(this.timeout);
-		
+		this.dropShlichus();
 		this.isActive = false;
 		this.on?.delete(this);
 		this.collected = 0;
@@ -355,21 +355,52 @@ class Shlichus {
 		// this.on = {};
 	}
 
-	async dropShlichus() {
+	dropShlichus() {
 		clearTimeout(this.timeout)
 		this.isActive = false;
-		
+		console.log("Items?",this.items)
 		if(this.items) {
 			var it;
 			for(it of this.items) {
+
+			console.log("Trying")
 				try {
 					this.olam.sealayk(it)
+					console.log("removed? (maybe)", it)
 				} catch(e) {
 					console.log("Couldn't remove",e,this,it)
 				}
 			}
 			this.collected = 0;
-			this.items = Array.from({length:this.items.length});
+			/**
+			 * check which items were added to what 
+			 * placeholders, and remove them.
+			 */
+
+
+			if(Array.isArray(this.items)) {
+				this.items.forEach(q => {
+					var p = q.addedToPlaceholder/**
+						the placeholder child mesh that
+						the nivra item may have been added to
+					 */
+					if(p) {
+						p.addedTo = null /***
+						clear up the availability of the
+						placeholder mesh to allow it to be
+						added to again */;
+
+
+					}
+
+					q.sealayk();/**
+					remove entire nivra from the world
+					 */
+				})
+			}
+			this.items = null;//Array.from({length:this.items.length});
+
+
 			this.updateMinimapPositions();
 		}
 		
@@ -406,22 +437,32 @@ class Shlichus {
 	
 	async updateMinimapPositions(items) {
 
+		var set = false;
 		var mm = this.olam.minimap;
 		if (!mm) {
-			return;
+			return console.log("no minimap");
 		}
 
 		if (!mm.shaderPass) {
-			return
+			return console.log("no shaderpass");
 		}
 
-		if (!items) items = this.items
+
+		if (!items) {
+			items = this.items;
+			
+		} else {
+			this.items = items;
+			set = true;
+			console.log("set for first time", this.items)
+		}
 		if (!items) {
 
 			
 			mm.shaderPass.uniforms.numberOfDvarim.value = 0;
-			return;
+			return console.log("no items");;
 		}
+		
 		
 		var positions = items.map(w => {
 				if (!w || w.collected) {
@@ -441,6 +482,10 @@ class Shlichus {
 		} else if (positions.length) {
 			this._did = false;
 			
+
+		}
+		if(set) {
+			console.log("doing0", positions)
 		}
 		
 

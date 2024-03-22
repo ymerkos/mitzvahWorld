@@ -2054,6 +2054,49 @@ export default class Olam extends AWTSMOOS.Nivra {
 
     async doPlaceholderAndEntityLogic(nivra) {
         //placeholder logic
+        /**
+         * placeholders work like this:
+         * each general mesh can have children
+         * meshes set up in the 3d modeling software
+         * with children that have custom properties
+         * "placeholder".
+         * 
+         * When that happens, then
+         * whatever string the 
+         * "placeholder" property is set to 
+         * is the placeholder name.
+         * 
+         * When adding nivrayim in code,
+         * if the placeholder name property
+         * of the nivra matches an available
+         * placeholder that's a child 
+         * in a general mesh, then that 
+         * placeholder
+         * is filled up, meaning that
+         * the newlty added
+         * nivra is positioned at the 
+         * position of the child (placeholder).
+         * 
+         * Then, it is kept track of that
+         * the placeholder child mesh is no 
+         * longer available, and then if one
+         * in code continues to add more placeholders
+         * with the same placeholder name, they essntially
+         * keep looking for available placeholder child meshes
+         * that match the same name, until no more are
+         * available.
+         * 
+         * Also, sometimes placeholders are only associated
+         * with specific missions.
+         * 
+         * In that case we check for the "shlichus" proeprty
+         * in the child mesh, that would be set up in the 
+         * modeling software, so we can keep track of what
+         * items are added where as part of what mission,
+         * and make sure to only add some items that
+         * are meant for one mission to some positions,
+         * even if they share the same placeholder name.
+         */
         var nm = nivra.placeholderName;
         if(typeof(nm) == "string") {
             
@@ -2085,7 +2128,21 @@ export default class Olam extends AWTSMOOS.Nivra {
                             //nivra.mesh.rotation.copy(av.rotation);
                             av.addedTo = nivra;
                             nivra.addedToPlaceholder = av;
-
+                            /**
+                             * if the items 
+                             * are placeholders
+                             * as part of a shlichus,
+                             * then we need to keep track, within the
+                             * shlichus instance,
+                             * what items were added to the placeholders,
+                             * so that if we drop the shlichus,
+                             * we can later remove them and reset the 
+                             * placeholders to available
+                             */
+                            var activeShlichus = this.ayshPeula("get active shlichus", nivra.shlichus)
+                            if(activeShlichus) {
+                                activeShlichus.placeholdersAddedTo.push(av)
+                            }
                             console.log("Added",av,pl[nm],pl)
 
                         } else {
@@ -2192,7 +2249,7 @@ export default class Olam extends AWTSMOOS.Nivra {
      * @param {AWTSMOOS.Nivra} nivra 
      */
 
-    async sealayk(nivra) {
+    sealayk(nivra) {
         if(!nivra) return;
         
         if(nivra.isMesh) {
@@ -2206,11 +2263,13 @@ export default class Olam extends AWTSMOOS.Nivra {
 
             }
         }
-
+        console.log("Trying to remove",nivra)
         var m = nivra.mesh;
         try {
-            if(m)
+            if(m) {
                 m.removeFromParent();
+                
+            }
             if(nivra.modelMesh) {
                 nivra.modelMesh.removeFromParent();
             }
