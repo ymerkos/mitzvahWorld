@@ -110,7 +110,8 @@ async function signInWithGoogle() {
 async function writeToFirestore(...pathSegments) {
     try {
       var seg = pathSegments.slice(0, pathSegments.length-1)
-      var data = pathSegments[pathSegments.length - 1]
+      var data = pathSegments[pathSegments.length - 1];
+      console.log("Trying to write",seg,data)
       // Write data to Firestore
       await setDoc(doc(db, ...seg), data);
       console.log("Document written successfully!");
