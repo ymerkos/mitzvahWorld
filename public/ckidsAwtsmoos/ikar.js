@@ -13,12 +13,9 @@
 
 console.log("B\"H",
 "\n","Starting the Ikar JS!")
-import {
+import asdf from "/auth/index.js"
 
-    startAll
-} from "/auth/index.js"
-
-startAll()
+window.asdf=asdf;
 import ManagerOfAllWorlds from "./worldManager.js";
 
 try {
