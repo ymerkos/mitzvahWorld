@@ -14,7 +14,7 @@
 console.log("B\"H",
 "\n","Starting the Ikar JS!")
 import {
-    auth,
+
     startAll
 } from "/auth/index.js"
 
