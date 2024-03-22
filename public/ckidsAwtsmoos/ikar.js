@@ -16,6 +16,7 @@ console.log("B\"H",
 import asdf from "/auth/index.js"
 
 window.asdf=asdf;
+asdf.startAll()
 import ManagerOfAllWorlds from "./worldManager.js";
 
 try {
