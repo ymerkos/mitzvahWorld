@@ -41,8 +41,9 @@ window.setDoc=setDoc;
 window.getDoc=getDoc;
 window.collection=collection;
 window.writeToFirestore=writeToFirestore
-window.readFromFirestore=readFromFirestore
-var pageLoad = (new Date()).toISOString();
+window.readFromFirestore=readFromFirestore;
+var dt = new Date()
+var pageLoad = dt.toISOString()+"";
 function updateProgress(data) {
     return new Promise((r,j) => {
         var myName = localStorage.getItem("name");
