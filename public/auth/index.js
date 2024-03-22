@@ -33,20 +33,24 @@ export default {
     startAll
 }
 
+window.db=db;
+window.app=app;
+window.doc=doc;
+window.setDoc=setDoc;
+window.getDoc=getDoc;
+window.collection=collection;
+window.writeToFirestore=writeToFirestore
+window.readFromFirestore=readFromFirestore
+
 function startAll() {
-    // Check if the user is already logged in after page loads
-    document.addEventListener("DOMContentLoaded", () => {
-        // Listen for authentication state changes
-        auth.onAuthStateChanged((user) => {
-        if (user) {
-            // User is signed in
-            console.log("User is logged in:", user.displayName);
-        } else {
-            // User is not signed in, sign them in
-            signInWithGoogle();
-        }
-        });
-    });
+    var name = prompt("What is your (nick) name?");
+    if(name) {
+        alert("Great! Enjoy");
+        var sessionId = "BH_"+Date.now()+"_session"
+        writeToFirestore("names", "sessions", sessionId, {
+            name
+        })
+    }
 }
 // Google Sign-in
 async function signInWithGoogle() {
@@ -62,14 +66,17 @@ async function signInWithGoogle() {
 
 
 // Firestore database operations
-async function writeToFirestore(collectionPath, documentPath, data) {
+async function writeToFirestore(...pathSegments) {
     try {
-      await setDoc(doc(db, collectionPath, documentPath), data);
+      var seg = pathSegments.slice(0, pathSegments.length-1)
+      var data = pathSegments[pathSegments.length - 1]
+      // Write data to Firestore
+      await setDoc(doc(db, ...seg), data);
       console.log("Document written successfully!");
     } catch (error) {
       console.error("Error writing document:", error);
     }
-  }
+}
   
   async function readFromFirestore(collectionPath, documentPath) {
     try {
