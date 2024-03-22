@@ -1,6 +1,7 @@
 {
   "projects": {
-    "awtsmoos": "ckids-games"
+    "awtsmoos": "ckids-games",
+    "default": "ckids-games"
   },
   "targets": {},
   "etags": {}

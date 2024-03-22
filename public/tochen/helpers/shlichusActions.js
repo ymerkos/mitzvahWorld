@@ -183,6 +183,7 @@ export default class ShlichusActions {
                 sh,
                 msg
             });
+            console.log("DROPT?",id,msg,sh)
 
 
             sh.olam.showingImportantMessage = false;
@@ -556,7 +557,7 @@ export default class ShlichusActions {
     }
 
     setTime(sh, info={minutes:0,seconds:0}||{}) {
-        var override = null//3;
+        var override = null//6;
         var minutes=info.minutes||0;
         var seconds = info.seconds||0;
         sh.startTime = Date.now();
@@ -575,7 +576,7 @@ export default class ShlichusActions {
             msg: "The time ran OUT!"
             +" It's okay, the first step to sucess might "
             +"sometimes be failure, like it is now."
-            +" Reset the shlichus?"
+            +" To reset, go find the one who gave you the shlichus and get it again."
         })
      
     }
@@ -584,7 +585,7 @@ export default class ShlichusActions {
 function showFail({
     sh, msg
 }) {
-    sh.olam.showingImportantMessage = true;
+    //sh.olam.showingImportantMessage = true;
         sh.olam.htmlAction({
             shaym: "failed alert shlichus",
             methods: {
@@ -594,8 +595,8 @@ function showFail({
             }
 
         })
-      
-        sh.delete();
+     
+        sh.dropShlichus();
         sh.olam.htmlAction({
             shaym: "failed message",
             properties: {

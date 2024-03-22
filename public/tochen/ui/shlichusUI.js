@@ -146,7 +146,7 @@ export default [
 						shaym: "standard failure",
                         className: "btns",
 						children: [
-                            mitzvahBtn({
+                            /*mitzvahBtn({
                                 text: "Ok ok, I'll try again iy\"H, if you insist.",
                                 onclick(e, $, ui) {
                                     var cs = $(
@@ -154,19 +154,19 @@ export default [
                                     );
                                     if(!cs) return;
                                     cs.classList.add("hidden")
-									var sn/*shlichus name*/
+									var sn//shlichus name
 										= $("sa shlichus name");
 									var nm = sn.textContent;
 								//	console.log("Trying to treset shlichus",sn,nm)
 									var sa = $("failed alert shlichus")
 									ui.peula(sa, {
 										resetShlichus: nm
-									})
+									});
                                 }
-                            }),
+                            }),*/
 							mitzvahBtn({
-                                text: "Actually, I think I might take a break now.",
-								color:"red",
+                                text: "Okay, when I'm ready I'll go find the one who gave the shlichus and get it again iy\"H",
+								color:"orange",
                                 onclick(e, $, ui) {
                                     var cs = $(
                                         "failed alert shlichus"

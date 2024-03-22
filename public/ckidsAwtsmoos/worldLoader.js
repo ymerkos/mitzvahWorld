@@ -66,7 +66,7 @@ export default class Olam extends AWTSMOOS.Nivra {
            // console.log("Reset!",player, nivra)
            
            if(!player.teleporting) {
-            console.log(player.olam, olam, olam == player.olam)
+            
             
             player.teleporting = true;
             setTimeout(() => {
@@ -1016,7 +1016,7 @@ export default class Olam extends AWTSMOOS.Nivra {
                 addedTo = c;
             }
         });
-        console.log("Whats happeneing",entity,addedTo)
+        
         if(!addedTo/*return first entity*/) {
             return entity[0]
         } else {
@@ -1361,7 +1361,7 @@ export default class Olam extends AWTSMOOS.Nivra {
                 }
             });
         } else {
-            console.log("resizing horizontal");
+            
             this.ayshPeula("htmlAction", {
                 selector: "body",
                 methods: {
@@ -2128,6 +2128,7 @@ export default class Olam extends AWTSMOOS.Nivra {
                             //nivra.mesh.rotation.copy(av.rotation);
                             av.addedTo = nivra;
                             nivra.addedToPlaceholder = av;
+<<<<<<< HEAD
                             /**
                              * if the items 
                              * are placeholders
@@ -2144,6 +2145,10 @@ export default class Olam extends AWTSMOOS.Nivra {
                                 activeShlichus.placeholdersAddedTo.push(av)
                             }
                             console.log("Added",av,pl[nm],pl)
+=======
+
+                            
+>>>>>>> 105228844d6877a962156a8a62868e7787390318
 
                         } else {
                             console.log("Mesh not added!", nivra)
@@ -2218,7 +2223,7 @@ export default class Olam extends AWTSMOOS.Nivra {
                 type = "Domem"
             }
             var av = this.getEntity(k, nivra)//nivra.entities[k];
-            console.log("finding?",av)
+            
             if(!av) {
                 return 
             }
@@ -2255,7 +2260,7 @@ export default class Olam extends AWTSMOOS.Nivra {
         if(nivra.isMesh) {
             try {
                 if(nivra.isSolid) {
-                    console.log("removing from octree")
+                    
                     this.worldOctree.removeMesh(nivra)
                 }
                 nivra.removeFromParent();
@@ -2315,7 +2320,7 @@ export default class Olam extends AWTSMOOS.Nivra {
 
         var ind = this.nivrayim.indexOf(nivra)
         if(ind > -1) {
-            console.log("Fond",ind,nivra)
+            
            // delete this.nivrayim[ind];
             this.nivrayim.splice(ind, 1);
             nivra.clearAll();
