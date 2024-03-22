@@ -707,7 +707,7 @@ export default class Olam extends AWTSMOOS.Nivra {
                     shl.initiate();
                     this.ayshPeula("updateProgress",{
                      
-                        acceptedShlichus: {
+                        ["acceptedShlichus_"+shlichusID]: {
                             shlichusID,
                             time: Date.now()
                         }
