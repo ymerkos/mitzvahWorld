@@ -11,10 +11,15 @@
 
 //import starting level
 
-import ManagerOfAllWorlds from "./worldManager.js";
-
 console.log("B\"H",
 "\n","Starting the Ikar JS!")
+import {
+    auth,
+    startAll
+} from "/auth/index.js"
+
+startAll()
+import ManagerOfAllWorlds from "./worldManager.js";
 
 try {
 
