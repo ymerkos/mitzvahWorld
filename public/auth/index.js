@@ -29,6 +29,7 @@ export default {
     setDoc,
     getDoc,
     doc,
+    updateDoc,
     auth,
     startAll,
     updateProgress
@@ -112,10 +113,19 @@ async function writeToFirestore(...pathSegments) {
     try {
       var seg = pathSegments.slice(0, pathSegments.length-1)
       var data = pathSegments[pathSegments.length - 1];
-      console.log("Trying to write",seg,data)
-      // Write data to Firestore
-      await setDoc(doc(db, ...seg), data);
-      console.log("Document written successfully!");
+      const docRef = doc(db, ...seg);
+      
+      if ((await getDoc(docRef)).exists()) {
+        console.log("Document exists, updating:", seg, data);
+        // Update data in Firestore
+        await updateDoc(docRef, data);
+        console.log("Document updated successfully!");
+      } else {
+        console.log("Document doesn't exist, creating:", seg, data);
+        // Create new document in Firestore
+        await setDoc(docRef, data);
+        console.log("Document created successfully!");
+      }
     } catch (error) {
       console.error("Error writing document:", error);
     }
