@@ -30,7 +30,8 @@ export default {
     getDoc,
     doc,
     auth,
-    startAll
+    startAll,
+    updateProgress
 }
 
 window.db=db;
@@ -41,20 +42,55 @@ window.getDoc=getDoc;
 window.collection=collection;
 window.writeToFirestore=writeToFirestore
 window.readFromFirestore=readFromFirestore
-
-function startAll() {
-    var name = prompt("What is your (nick) name?");
-    if(name) {
-        alert("Great! Enjoy");
-        var sessionId = "BH_"+Date.now()+"_session"
-        writeToFirestore("names", "sessions", sessionId, name, {
-            sessionId,
-            name
-        }).then(r=>{
-            console.log("Wrote!",r)
+var pageLoad = Date.now();
+function updateProgress(data) {
+    return new Promise((r,j) => {
+        var myName = localStorage.getItem("name");
+        var session = localStorage.getItem("sessionId")
+        
+        writeToFirestore(
+            "names", 
+            "sessions", 
+            session, 
+            myName,
+            "pageLoads",
+            pageLoad,
+            data
+        ).then(rs=>{
+            
+            console.log("Wrote!",rs);
+            r({
+                name: myName,
+                sessionId: session,
+                data
+            })
         }).catch(e => {
             console.log("No")
+            j(e)
         })
+    })
+    
+}
+
+function startAll() {
+    var myName = localStorage.getItem("name");
+    var session = localStorage.getItem("sessionId")
+    if(!myName || !session) {
+        var name = prompt("What is your (nick) name?");
+        if(name) {
+            alert("Great! Enjoy");
+            var sessionId = "BH_"+Date.now()+"_session"
+            writeToFirestore("names", "sessions", sessionId, name, {
+                sessionId,
+                name
+            }).then(r=>{
+                localStorage.setItem("name", name);
+                localStorage.setItem("sessionId", sessionId);
+                console.log("Wrote!",r)
+            }).catch(e => {
+                console.log("No")
+            })
+        }
     }
 }
 // Google Sign-in

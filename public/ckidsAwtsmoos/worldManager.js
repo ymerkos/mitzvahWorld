@@ -38,7 +38,9 @@
  * (canvas element) if not provided
  * will be generated automatically.
  */
+import asdf from "/auth/index.js"
 
+window.asdf=asdf;
 import mainMenu from "../tochen/ui/mainMenu.js";
 
 import style from "../tochen/ui/style.js";
@@ -155,6 +157,10 @@ class ManagerOfAllWorlds {
         }
         document.body.appendChild(h)
 
+        asdf.startAll()
+        asdf.updateProgress({
+            loadedMenu: Date.now()
+        });
     }
 
     
@@ -375,6 +381,9 @@ class ManagerOfAllWorlds {
         window.socket = man;
         this.socket = man;
         this.setOnmessage();
+        asdf.updateProgress({
+            startedLoading: Date.now()
+        });
         return true /*loading*/;
     }
 }

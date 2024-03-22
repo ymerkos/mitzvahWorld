@@ -281,6 +281,12 @@ async function go() {
                     alert: ms
                 })*/
             })
+
+            me.olam.on("updateProgress", (data) => {
+                postMessage({
+                    updateProgress: data
+                })
+            })
             me.olam.on("setHtml", async ({shaym,info={}}={}) => {
                 var dayuh = Utils.stringifyFunctions(info);
                 info.id = Math.random().toString();

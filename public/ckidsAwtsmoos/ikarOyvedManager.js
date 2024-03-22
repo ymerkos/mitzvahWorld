@@ -14,7 +14,7 @@
 
 import Utils from "./utils.js";
 import UI from "/games/scripts/awtsmoos/ui.js";
-
+import asdf from "/auth/index.js"
 var myUi = null;
 var ZOOM_INTENSITY = 26 //for mobile
 var TURN_INTENSITY = 1.3;
@@ -72,6 +72,9 @@ export default class OlamWorkerManager {
             'heescheel'() {
                 
                 self.heescheel();
+                asdf.updateProgress({
+                    startedLoading: Date.now()
+                })
             },
             deleteCanvas() {
                 if(self.canvasElement) {
@@ -284,7 +287,10 @@ export default class OlamWorkerManager {
                 });
             },
             "game started": a => {
-                document.body.className="inGame"
+                document.body.className="inGame";
+                asdf.updateProgress({
+                    gameStarted: Date.now()
+                })
             },
             "htmlCreate": info => {
                 if(
@@ -361,6 +367,9 @@ export default class OlamWorkerManager {
                         textContent: JSON.stringify(er)
                     }
                 });
+            },
+            updateProgress(data) {
+                asdf.updateProgress(data)
             },
 
             alert(ms) {

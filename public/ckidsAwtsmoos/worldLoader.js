@@ -705,6 +705,13 @@ export default class Olam extends AWTSMOOS.Nivra {
                         createShlichus(shData);
 
                     shl.initiate();
+                    this.ayshPeula("updateProgress",{
+                     
+                        acceptedShlichus: {
+                            shlichusID,
+                            time: Date.now()
+                        }
+                    })
 
                     /*
                         add to list of started shlichuseem
@@ -724,7 +731,13 @@ export default class Olam extends AWTSMOOS.Nivra {
 
                 ash.isActive = false;
                 ash.finish(ash);
-
+                this.ayshPeula("updateProgress",{
+                     
+                    completedShlichus: {
+                        shlichusID: sID,
+                        time: Date.now()
+                    }
+                })
                 var ind = this.completedShlichuseem.indexOf(sID);
                 if(ind < 0) {
                     this.completedShlichuseem.push(sID)
@@ -2128,27 +2141,8 @@ export default class Olam extends AWTSMOOS.Nivra {
                             //nivra.mesh.rotation.copy(av.rotation);
                             av.addedTo = nivra;
                             nivra.addedToPlaceholder = av;
-<<<<<<< HEAD
-                            /**
-                             * if the items 
-                             * are placeholders
-                             * as part of a shlichus,
-                             * then we need to keep track, within the
-                             * shlichus instance,
-                             * what items were added to the placeholders,
-                             * so that if we drop the shlichus,
-                             * we can later remove them and reset the 
-                             * placeholders to available
-                             */
-                            var activeShlichus = this.ayshPeula("get active shlichus", nivra.shlichus)
-                            if(activeShlichus) {
-                                activeShlichus.placeholdersAddedTo.push(av)
-                            }
-                            console.log("Added",av,pl[nm],pl)
-=======
 
                             
->>>>>>> 105228844d6877a962156a8a62868e7787390318
 
                         } else {
                             console.log("Mesh not added!", nivra)
@@ -2548,6 +2542,11 @@ export default class Olam extends AWTSMOOS.Nivra {
 					await nivra.afterBriyah();
 				}
 			}
+
+            this.ayshPeula("updateProgress",{
+                     
+                loadedNivrayim: Date.now()
+            })
 
 			
 			
