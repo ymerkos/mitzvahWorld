@@ -233,6 +233,7 @@ class Tawfeek {
 		if (typeof progress !== 'number' || progress < 0 || progress > 100) {
 			throw new Error('Invalid progress value');
 		}
+		
 		this.progress = progress;
 		this.status = progress === 100 ? SHLICHUS_STATUS.COMPLETE : SHLICHUS_STATUS.IN_PROGRESS;
 	}
@@ -327,7 +328,8 @@ class Shlichus {
 		it.forEach(w=> {
 			w.on("collected", (item) => {
 				//for(var i = 0; i < 5; i++) //for testing entire thing at once
-				this.collectItem(item)
+				this.collectItem(item);
+				
 			})
 		})
 		return it;
@@ -561,7 +563,12 @@ class Shlichus {
 		}
 		
 		this.progress = this.collected / this.totalCollectedObjects;
-		
+		this.olam.ayshPeula("updateProgress", {
+			["shlichusProgressAtID_"+this.id]: {
+				collected: this.collected,
+				progress: this.progress
+			}
+		})
 		this.on?.progress?.(this);
 		
 		this.on?.collected?.(this.collected, this);
