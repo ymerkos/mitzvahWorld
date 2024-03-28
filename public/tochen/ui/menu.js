@@ -8,7 +8,7 @@ import btnBubble from "./resources/btnBubble.js";
 export default [
     {
         shaym: "menu",
-        className: "menu hidden menuItm",
+        className: "menu hidden menuItm offscreen",
         children: [
             
             {

@@ -27,6 +27,13 @@ export default /*css*/`
 
 /*For main menu*/
 
+.offscreen {
+    left: -300px;
+}
+
+.onscreen {
+    left: 0;
+}
 .menu {
     overflow:hidden;
     background: var(
@@ -40,12 +47,14 @@ export default /*css*/`
     width: 100%;
     height: 100%;
     position: absolute;
-    left: 0;
+
     top: 0;
 
     display: flex;
     align-items: center;
     justify-content: center;
+
+    transition: left 0.5s; /* Animation effect */
 }
 
 .info {

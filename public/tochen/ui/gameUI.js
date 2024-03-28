@@ -32,7 +32,9 @@ var ui = [
                     console.log("Doing")
                     if(!m) return;
                     m.classList.remove("hidden");
-        
+                    m.class.remove("offscreen");
+                    m.class.add("onscreen");
+                    
                     var ins = $("instructions")
                     if(!ins) return;
                     ins.classList.add("hidden")
