@@ -29,7 +29,16 @@ export default [
                     }
                 ],
                 onclick(e, $) {
-                    $("menu").classList.add("hidden");
+                    var m = $("menu")
+                    console.log("Doing")
+                    if(!m) return;
+                    m.classList.toggle("hidden");
+                    m.classList.toggle("offscreen");
+                    m.classList.toggle("onscreen");
+
+                    var ins = $("instructions")
+                    if(!ins) return;
+                    ins.classList.toggle("hidden")
                 }
             },
             {
