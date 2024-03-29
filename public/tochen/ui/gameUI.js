@@ -31,13 +31,13 @@ var ui = [
                     var m = $("menu")
                     console.log("Doing")
                     if(!m) return;
-                    m.classList.remove("hidden");
-                    m.class.remove("offscreen");
-                    m.class.add("onscreen");
-                    
+                    m.classList.toggle("hidden");
+                    m.classList.toggle("offscreen");
+                    m.classList.toggle("onscreen");
+
                     var ins = $("instructions")
                     if(!ins) return;
-                    ins.classList.add("hidden")
+                    ins.classList.toggle("hidden")
                 }
             },
             {
