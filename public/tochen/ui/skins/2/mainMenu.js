@@ -26,19 +26,19 @@ export default /*css*/`
 }
 
 /*For main menu*/
-
+.onscreen {
+    left: 0px !important;
+}
 .offscreen {
     left: -300px;
 }
 
-.onscreen {
-    left: 0;
-}
+
 
 .gameMenu {
-    left:-300px;
+
     position:absolute;
-    
+    z-index:7;
     transition: left 0.5s; /* Animation effect */
 }
 
