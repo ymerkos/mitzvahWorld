@@ -34,6 +34,14 @@ export default /*css*/`
 .onscreen {
     left: 0;
 }
+
+.gameMenu {
+    left:-300px;
+    position:absolute;
+    
+    transition: left 0.5s; /* Animation effect */
+}
+
 .menu {
     overflow:hidden;
     background: var(
@@ -47,14 +55,13 @@ export default /*css*/`
     width: 100%;
     height: 100%;
     position: absolute;
-
+            left:0;
     top: 0;
 
     display: flex;
     align-items: center;
     justify-content: center;
 
-    transition: left 0.5s; /* Animation effect */
 }
 
 .info {
